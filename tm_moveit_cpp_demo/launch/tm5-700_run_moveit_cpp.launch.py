@@ -43,7 +43,7 @@ def generate_launch_description():
     # moveit_cpp.yaml is passed by filename for now since it's node specific
     moveit_cpp_yaml_file_name = get_package_share_directory('tm_moveit_cpp_demo') + "/config/moveit_cpp.yaml"
 
-    moveit_cpp_yaml_file_name2 = get_package_share_directory('tm_moveit_cpp_demo') + "/config/moveit_cpp2.yaml"
+    #moveit_cpp_yaml_file_name2 = get_package_share_directory('tm_moveit_cpp_demo') + "/config/moveit_cpp2.yaml"
 
     # Component yaml files are grouped in separate namespaces
     # Use URDF file: tm5-700-nominal.urdf to do moveit demo
@@ -57,32 +57,25 @@ def generate_launch_description():
             "tm5-700.urdf.xacro",
         )
     )
-    robot_description_config2 = xacro.process_file(
-        os.path.join(
-            get_package_share_directory("tm_description"),
-            "xacro",
-            "tm5-7002.urdf.xacro",
-        )
-    )                                                         
+                                                       
     robot_description = {"robot_description": robot_description_config.toxml()}
-    robot_description2 = {"robot_description": robot_description_config2.toxml()}
 
     robot_description_semantic_config = load_file('tm_moveit_config_tm5-700', 'config/tm5-700.srdf')
     robot_description_semantic = {'robot_description_semantic' : robot_description_semantic_config}
-    robot_description_semantic_config2 = load_file('tm_moveit_config_tm5-700', 'config/tm5-700.srdf')
-    robot_description_semantic2 = {'robot_description_semantic' : robot_description_semantic_config2}
+    #robot_description_semantic_config2 = load_file('tm_moveit_config_tm5-700', 'config/tm5-700.srdf')
+    #robot_description_semantic2 = {'robot_description_semantic' : robot_description_semantic_config2}
 
     kinematics_yaml = load_yaml('tm_moveit_config_tm5-700', 'config/kinematics.yaml')
     robot_description_kinematics = { 'robot_description_kinematics' : kinematics_yaml }
-    kinematics_yaml2 = load_yaml('tm_moveit_config_tm5-700', 'config/kinematics.yaml')
-    robot_description_kinematics2 = { 'robot_description_kinematics' : kinematics_yaml2 }
+    #kinematics_yaml2 = load_yaml('tm_moveit_config_tm5-700', 'config/kinematics.yaml')
+    #robot_description_kinematics2 = { 'robot_description_kinematics' : kinematics_yaml2 }
 
     controllers_yaml = load_yaml('tm_moveit_cpp_demo', 'config/controllers.yaml')
     moveit_controllers = { 'moveit_simple_controller_manager' : controllers_yaml,
                            'moveit_controller_manager': 'moveit_simple_controller_manager/MoveItSimpleControllerManager'}
-    controllers_yaml2 = load_yaml('tm_moveit_cpp_demo', 'config/controllers.yaml')
-    moveit_controllers2 = { 'moveit_simple_controller_manager' : controllers_yaml2,
-                           'moveit_controller_manager': 'moveit_simple_controller_manager/MoveItSimpleControllerManager'}
+    #controllers_yaml2 = load_yaml('tm_moveit_cpp_demo', 'config/controllers.yaml')
+    #moveit_controllers2 = { 'moveit_simple_controller_manager' : controllers_yaml2,
+    #                       'moveit_controller_manager': 'moveit_simple_controller_manager/MoveItSimpleControllerManager'}
     
     ompl_planning_pipeline_config = { 'ompl' : {
         'planning_plugin' : 'ompl_interface/OMPLPlanner',
@@ -91,12 +84,12 @@ def generate_launch_description():
     ompl_planning_yaml = load_yaml('tm_moveit_config_tm5-700', 'config/ompl_planning.yaml')
     ompl_planning_pipeline_config['ompl'].update(ompl_planning_yaml)
 
-    ompl_planning_pipeline_config2 = { 'ompl' : {
-        'planning_plugin' : 'ompl_interface/OMPLPlanner',
-        'request_adapters' : """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""" ,
-        'start_state_max_bounds_error' : 0.1 } }
-    ompl_planning_yaml2 = load_yaml('tm_moveit_config_tm5-700', 'config/ompl_planning2.yaml')
-    ompl_planning_pipeline_config2['ompl'].update(ompl_planning_yaml2)
+    # ompl_planning_pipeline_config2 = { 'ompl' : {
+    #     'planning_plugin' : 'ompl_interface/OMPLPlanner',
+    #     'request_adapters' : """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""" ,
+    #     'start_state_max_bounds_error' : 0.1 } }
+    # ompl_planning_yaml2 = load_yaml('tm_moveit_config_tm5-700', 'config/ompl_planning2.yaml')
+    # ompl_planning_pipeline_config2['ompl'].update(ompl_planning_yaml2)
 
     #MoveItCpp demo executable
     run_moveit_cpp_node = Node(
@@ -115,32 +108,32 @@ def generate_launch_description():
             moveit_controllers]
         )
     
-    run_moveit_cpp_node2 = Node(
-        package='tm_moveit_cpp_demo',
-        # TODO(henningkayser): add debug argument
-        # prefix='xterm -e gdb --args',
-        executable='run_moveit_cpp2',
-        namespace='',
-        output='screen',
-        parameters=[
-            moveit_cpp_yaml_file_name,
-            robot_description2,
-            robot_description_semantic2,
-            kinematics_yaml2,
-            ompl_planning_pipeline_config2,
-            moveit_controllers2],
-        remappings=[
-            ('/moveit_cpp/planning_scene_monitor','/moveit_cpp/planning_scene_monitor2'),
-            ('/moveit_cpp/publish_planning_scene','/moveit_cpp/publish_planning_scene2'),
-            ('/moveit_cpp/monitored_planning_scene', '/moveit_cpp/monitored_planning_scene2'),
-            ('/tmr_arm_controller/follow_joint_trajectory/_action/feedback', '/tmr_arm_controller/follow_joint_trajectory2/_action/feedback'),
-            ('/tmr_arm_controller/follow_joint_trajectory/_action/status', '/tmr_arm_controller/follow_joint_trajectory2/_action/status'),
-            ('/tmr_arm_controller/follow_joint_trajectory/_action/cancel_goal', '/tmr_arm_controller/follow_joint_trajectory2/_action/cancel_goal'),
-            ('/tmr_arm_controller/follow_joint_trajectory/_action/get_result', '/tmr_arm_controller/follow_joint_trajectory2/_action/get_result'),
-            ('/tmr_arm_controller/follow_joint_trajectory/_action/send_goal', '/tmr_arm_controller/follow_joint_trajectory2/_action/send_goal'),
-          ]
+    # run_moveit_cpp_node2 = Node(
+    #     package='tm_moveit_cpp_demo',
+    #     # TODO(henningkayser): add debug argument
+    #     # prefix='xterm -e gdb --args',
+    #     executable='run_moveit_cpp2',
+    #     namespace='',
+    #     output='screen',
+    #     parameters=[
+    #         moveit_cpp_yaml_file_name,
+    #         robot_description,
+    #         robot_description_semantic2,
+    #         kinematics_yaml2,
+    #         ompl_planning_pipeline_config2,
+    #         moveit_controllers2],
+    #     remappings=[
+    #         ('/moveit_cpp/planning_scene_monitor','/moveit_cpp/planning_scene_monitor2'),
+    #         ('/moveit_cpp/publish_planning_scene','/moveit_cpp/publish_planning_scene2'),
+    #         ('/moveit_cpp/monitored_planning_scene', '/moveit_cpp/monitored_planning_scene2'),
+    #         ('/tmr_arm_controller/follow_joint_trajectory/_action/feedback', '/tmr_arm_controller/follow_joint_trajectory2/_action/feedback'),
+    #         ('/tmr_arm_controller/follow_joint_trajectory/_action/status', '/tmr_arm_controller/follow_joint_trajectory2/_action/status'),
+    #         ('/tmr_arm_controller/follow_joint_trajectory/_action/cancel_goal', '/tmr_arm_controller/follow_joint_trajectory2/_action/cancel_goal'),
+    #         ('/tmr_arm_controller/follow_joint_trajectory/_action/get_result', '/tmr_arm_controller/follow_joint_trajectory2/_action/get_result'),
+    #         ('/tmr_arm_controller/follow_joint_trajectory/_action/send_goal', '/tmr_arm_controller/follow_joint_trajectory2/_action/send_goal'),
+    #       ]
             
-        )
+    #     )
 
 
     # RViz
@@ -174,17 +167,17 @@ def generate_launch_description():
         parameters=[robot_description]
     )
 
-    robot_state_publisher2 = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        name='robot_state_publisher2',
-        output='both',
-        parameters=[robot_description2],
-        remappings=[
-                ('/joint_states', '/joint_states2'),
-                ('/robot_description', '/robot_description2'),
-        ]
-    )
+    # robot_state_publisher2 = Node(
+    #     package='robot_state_publisher',
+    #     executable='robot_state_publisher',
+    #     name='robot_state_publisher2',
+    #     output='both',
+    #     parameters=[robot_description],
+    #     remappings=[
+    #             ('/joint_states', '/joint_states2'),
+    #             ('/robot_description', '/robot_description'),
+    #     ]
+    # )
 
     # joint driver
     tm_driver_node = Node(
@@ -233,6 +226,6 @@ def generate_launch_description():
     )
 
 
-    #return LaunchDescription([ tm_driver_node, static_tf, robot_state_publisher, rviz_node, run_moveit_cpp_node])
-    return LaunchDescription([ tm_driver_node, tm_driver_node2, static_tf, robot_state_publisher, robot_state_publisher2, rviz_node, run_moveit_cpp_node, run_moveit_cpp_node2])
+    return LaunchDescription([ tm_driver_node, tm_driver_node2, static_tf, robot_state_publisher, rviz_node, run_moveit_cpp_node])
+    #return LaunchDescription([ tm_driver_node, tm_driver_node2, static_tf, robot_state_publisher, robot_state_publisher2, rviz_node, run_moveit_cpp_node, run_moveit_cpp_node2])
     

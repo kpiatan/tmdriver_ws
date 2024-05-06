@@ -1,0 +1,15 @@
+# Default initial positions for tm5-700's ros2_control fake system
+
+initial_positions:
+  leftjoint_1: 0
+  leftjoint_2: 0
+  leftjoint_3: 0
+  leftjoint_4: 0
+  leftjoint_5: 0
+  leftjoint_6: 0
+  rightjoint_1: 0
+  rightjoint_2: 0
+  rightjoint_3: 0
+  rightjoint_4: 0
+  rightjoint_5: 0
+  rightjoint_6: 0

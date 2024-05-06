@@ -69,7 +69,7 @@ public:
     moveit_cpp_->getPlanningSceneMonitor()->setPlanningScenePublishingFrequency(100);
 
     RCLCPP_INFO(LOGGER, "Initialize PlanningComponent");
-    moveit::planning_interface::PlanningComponent arm("tmr_arm", moveit_cpp_);
+    moveit::planning_interface::PlanningComponent arm("left_tmr_arm", moveit_cpp_);
 
     // A little delay before running the plan
     rclcpp::sleep_for(std::chrono::seconds(3));
@@ -77,7 +77,7 @@ public:
     // Set joint state goal
     RCLCPP_INFO(LOGGER, "Set goal");
     //arm.setGoal("ready3");
-    arm.setGoal("home");    
+    arm.setGoal("lefthome");    
 
     // Run actual plan
     RCLCPP_INFO(LOGGER, "Plan to goal");
