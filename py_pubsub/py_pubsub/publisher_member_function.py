@@ -22,7 +22,7 @@ class MinimalPublisher(Node):
 
     def __init__(self):
         super().__init__('minimal_publisher')
-        self.publisher_ = self.create_publisher(JointState, 'joint_states', 10)
+        self.publisher_ = self.create_publisher(JointState, 'joint_statesLR', 10)
         timer_period = 0.5  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0
@@ -36,26 +36,19 @@ class MinimalPublisher(Node):
     def listener_callback(self, msg):
         global mensagem
         mensagem = msg
-        self.get_logger().info('I heard: "%s"' % msg.position)
+        # self.get_logger().info('I heard: "%s"' % msg.position)
 
     def timer_callback(self):
         global mensagem
         msg = mensagem
-        msg = JointState()
-        msg.name.append('leftjoint_1')
-        msg.name.append('leftjoint_2')
-        msg.name.append('leftjoint_3')
-        msg.name.append('leftjoint_4')
-        msg.name.append('leftjoint_5')
-        msg.name.append('leftjoint_6')
-        msg.name.append('rightjoint_1')
-        msg.name.append('rightjoint_2')
-        msg.name.append('rightjoint_3')
-        msg.name.append('rightjoint_4')
-        msg.name.append('rightjoint_5')
-        msg.name.append('rightjoint_6')
-        msg.position.append(47)
-        msg.position.append(48)
+        # msg.name.append('leftjoint_1')
+        # msg.name.append('leftjoint_2')
+        # msg.name.append('leftjoint_3')
+        # msg.name.append('leftjoint_4')
+        # msg.name.append('leftjoint_5')
+        # msg.name.append('leftjoint_6')
+        # msg.position.append(47)
+        # msg.position.append(48)
         self.publisher_.publish(msg)
         self.i += 1
 

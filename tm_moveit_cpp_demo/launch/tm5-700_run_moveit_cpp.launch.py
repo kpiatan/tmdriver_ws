@@ -211,7 +211,14 @@ def generate_launch_description():
             ]
     )
 
+    jointLRpublisher = Node(
+        package='py_pubsub',
+        executable='talker',
+        name='jointLR',
+        output='both',
+    )
 
-    return LaunchDescription([ tm_driver_node, tm_driver_node2, static_tf, robot_state_publisher, rviz_node, run_moveit_cpp_node])
+
+    return LaunchDescription([ tm_driver_node, tm_driver_node2, static_tf, robot_state_publisher, rviz_node, run_moveit_cpp_node, jointLRpublisher])
     #return LaunchDescription([ tm_driver_node, tm_driver_node2, static_tf, robot_state_publisher, robot_state_publisher2, rviz_node, run_moveit_cpp_node, run_moveit_cpp_node2])
     
