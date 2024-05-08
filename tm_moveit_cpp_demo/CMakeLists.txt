@@ -48,8 +48,8 @@ if (moveit_ros_planning_interface_FOUND)
     moveit_ros_planning_interface
     Boost
   )
-  add_executable(run_moveit_cpp2 src/run_moveit_cpp2.cpp)
-  ament_target_dependencies(run_moveit_cpp2
+  add_executable(leftrightjoints src/leftrightjoints.cpp)
+  ament_target_dependencies(leftrightjoints
     moveit_ros_planning_interface
     Boost
   )
@@ -57,7 +57,7 @@ if (moveit_ros_planning_interface_FOUND)
     EXPORT export_${PROJECT_NAME}
     DESTINATION lib/${PROJECT_NAME}
   )
-  install(TARGETS run_moveit_cpp2
+  install(TARGETS leftrightjoints
     EXPORT export_${PROJECT_NAME}
     DESTINATION lib/${PROJECT_NAME}
   )
