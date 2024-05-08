@@ -1,14 +1,60 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="tm5-700">
-    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
 
-    <!-- Import tm5-700 urdf file -->
-    <xacro:include filename="$(find tm_description)/xacro/tm5700.urdf" />
+  <xacro:arg name="ns" default="" />
+  <xacro:arg name="prefix" default="" />
+  <xacro:arg name="color" default="none" />
+  <xacro:arg name="trans_hw_iface" default="hardware_interface/PositionJointInterface" />
 
-    <!-- Import control_xacro -->
-    <xacro:include filename="tm5-700.ros2_control.xacro" />
+  <xacro:include filename="$(find tm_description)/xacro/macro.gazebo.xacro" />
+  <xacro:include filename="$(find tm_description)/xacro/macro.transmission.xacro" />
+  <xacro:include filename="$(find tm_description)/xacro/macro.materials.xacro" />
 
 
-    <xacro:tm5-700_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
+  <!-- tm5-700 -->
+  <!-- If the user want to use newly generated named robot description file as user_defined.urdf.xacro, -->
+  <!-- you must modify 'macro.tm5-700-nominal.urdf.xacro' to 'user_defined.urdf.xacro'  -->
+  <xacro:include filename="$(find tm_description)/xacro/macro.tm5-700-nominal.urdf.xacro" />
+
+
+  <!--  -->
+  <xacro:tmr_gazebo ns="$(arg ns)" prefix="$(arg prefix)" />
+  <xacro:tmr_transmission prefix="$(arg prefix)" hw_iface="$(arg trans_hw_iface)" />
+  <xacro:tmr_materials/>
+
+
+  <!-- Arm -->
+  <xacro:property name="color" value="$(arg color)"/>
+  <xacro:if value="${color == 'none'}">
+    <xacro:tm5-700 ns="$(arg ns)" prefix="left" />
+  </xacro:if>
+
+  <xacro:property name="color" value="$(arg color)"/>
+  <xacro:if value="${color == 'none'}">
+    <xacro:tm5-700 ns="$(arg ns)" prefix="right" />
+  </xacro:if>
+
+
+  <!-- Arm.color.stl -->
+  <xacro:unless value="${color == 'none'}">
+    <xacro:tm5-700 ns="$(arg ns)" prefix="left" color="${color}" format="stl" />
+  </xacro:unless>
+
+  <xacro:unless value="${color == 'none'}">
+    <xacro:tm5-700 ns="$(arg ns)" prefix="right" color="${color}" format="stl" />
+  </xacro:unless>
+
+  <link name="base"/>
+  <joint name="base_to_left" type="fixed">
+    <parent link="base"/>
+    <child link="leftbase"/>
+    <origin rpy="0.000000 0.000000 0.000000" xyz="0.000000 0.000000 0.000000"/>
+  </joint>
+  <joint name="base_to_right" type="fixed">
+    <parent link="base"/>
+    <child link="rightbase"/>
+    <origin rpy="0.000000 0.000000 0.000000" xyz="0.000000 1.200000 0.000000"/>
+  </joint>
+
 
 </robot>

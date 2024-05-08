@@ -62,34 +62,20 @@ def generate_launch_description():
 
     robot_description_semantic_config = load_file('tm_moveit_config_tm5-700', 'config/tm5-700.srdf')
     robot_description_semantic = {'robot_description_semantic' : robot_description_semantic_config}
-    #robot_description_semantic_config2 = load_file('tm_moveit_config_tm5-700', 'config/tm5-700.srdf')
-    #robot_description_semantic2 = {'robot_description_semantic' : robot_description_semantic_config2}
 
     kinematics_yaml = load_yaml('tm_moveit_config_tm5-700', 'config/kinematics.yaml')
     robot_description_kinematics = { 'robot_description_kinematics' : kinematics_yaml }
-    #kinematics_yaml2 = load_yaml('tm_moveit_config_tm5-700', 'config/kinematics.yaml')
-    #robot_description_kinematics2 = { 'robot_description_kinematics' : kinematics_yaml2 }
 
     controllers_yaml = load_yaml('tm_moveit_cpp_demo', 'config/controllers.yaml')
     moveit_controllers = { 'moveit_simple_controller_manager' : controllers_yaml,
                            'moveit_controller_manager': 'moveit_simple_controller_manager/MoveItSimpleControllerManager'}
-    #controllers_yaml2 = load_yaml('tm_moveit_cpp_demo', 'config/controllers.yaml')
-    #moveit_controllers2 = { 'moveit_simple_controller_manager' : controllers_yaml2,
-    #                       'moveit_controller_manager': 'moveit_simple_controller_manager/MoveItSimpleControllerManager'}
-    
+ 
     ompl_planning_pipeline_config = { 'ompl' : {
         'planning_plugin' : 'ompl_interface/OMPLPlanner',
         'request_adapters' : """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""" ,
         'start_state_max_bounds_error' : 0.1 } }
     ompl_planning_yaml = load_yaml('tm_moveit_config_tm5-700', 'config/ompl_planning.yaml')
     ompl_planning_pipeline_config['ompl'].update(ompl_planning_yaml)
-
-    # ompl_planning_pipeline_config2 = { 'ompl' : {
-    #     'planning_plugin' : 'ompl_interface/OMPLPlanner',
-    #     'request_adapters' : """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""" ,
-    #     'start_state_max_bounds_error' : 0.1 } }
-    # ompl_planning_yaml2 = load_yaml('tm_moveit_config_tm5-700', 'config/ompl_planning2.yaml')
-    # ompl_planning_pipeline_config2['ompl'].update(ompl_planning_yaml2)
 
     #MoveItCpp demo executable
     run_moveit_cpp_node = Node(
