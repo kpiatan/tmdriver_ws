@@ -48,16 +48,7 @@ if (moveit_ros_planning_interface_FOUND)
     moveit_ros_planning_interface
     Boost
   )
-  add_executable(leftrightjoints src/leftrightjoints.cpp)
-  ament_target_dependencies(leftrightjoints
-    moveit_ros_planning_interface
-    Boost
-  )
   install(TARGETS run_moveit_cpp
-    EXPORT export_${PROJECT_NAME}
-    DESTINATION lib/${PROJECT_NAME}
-  )
-  install(TARGETS leftrightjoints
     EXPORT export_${PROJECT_NAME}
     DESTINATION lib/${PROJECT_NAME}
   )
