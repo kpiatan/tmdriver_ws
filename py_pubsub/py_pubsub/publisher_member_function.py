@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 import rclpy
+import time
 from rclpy.node import Node
 
 from sensor_msgs.msg import JointState
@@ -23,36 +25,90 @@ class MinimalPublisher(Node):
     def __init__(self):
         super().__init__('minimal_publisher')
         self.publisher_ = self.create_publisher(JointState, 'joint_statesLR', 10)
-        timer_period = 0.5  # seconds
-        self.timer = self.create_timer(timer_period, self.timer_callback)
+        timer_period = 0.05  # seconds
         self.i = 0
-        self.subscription = self.create_subscription(
+        self.subscriptionleft = self.create_subscription(
             JointState,
             'joint_states',
-            self.listener_callback,
+            self.listener_callback_left,
             10)
-        self.subscription  # prevent unused variable warning
+        self.subscriptionleft  # prevent unused variable warning
+        self.subscriptionright = self.create_subscription(
+            JointState,
+            'joint_states2',
+            self.listener_callback_right,
+            10)
+        self.subscriptionright  # prevent unused variable warning
+        #time.sleep(10)
+        self.timer = self.create_timer(timer_period, self.timer_callback)
 
-    def listener_callback(self, msg):
-        global mensagem
-        mensagem = msg
+    def listener_callback_left(self, msg):
+        global mensagem_left
+        mensagem_left = msg
+        # self.get_logger().info('I heard: "%s"' % msg.position)
+
+    def listener_callback_right(self, msg):
+        global mensagem_right
+        mensagem_right = msg
         # self.get_logger().info('I heard: "%s"' % msg.position)
 
     def timer_callback(self):
-        global mensagem
-        msg = mensagem
-        # msg.name.append('leftjoint_1')
-        # msg.name.append('leftjoint_2')
-        # msg.name.append('leftjoint_3')
-        # msg.name.append('leftjoint_4')
-        # msg.name.append('leftjoint_5')
-        # msg.name.append('leftjoint_6')
-        # msg.position.append(47)
-        # msg.position.append(48)
+        global mensagem_left, mensagem_right
+        msg = JointState()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.name.append('leftjoint_1')
+        msg.name.append('leftjoint_2')
+        msg.name.append('leftjoint_3')
+        msg.name.append('leftjoint_4')
+        msg.name.append('leftjoint_5')
+        msg.name.append('leftjoint_6')
+        msg.name.append('rightjoint_1')
+        msg.name.append('rightjoint_2')
+        msg.name.append('rightjoint_3')
+        msg.name.append('rightjoint_4')
+        msg.name.append('rightjoint_5')
+        msg.name.append('rightjoint_6')
+        msg.position.append(mensagem_left.position[0])
+        msg.position.append(mensagem_left.position[1])
+        msg.position.append(mensagem_left.position[2])
+        msg.position.append(mensagem_left.position[3])
+        msg.position.append(mensagem_left.position[4])
+        msg.position.append(mensagem_left.position[5])
+        msg.position.append(mensagem_right.position[0])
+        msg.position.append(mensagem_right.position[1])
+        msg.position.append(mensagem_right.position[2])
+        msg.position.append(mensagem_right.position[3])
+        msg.position.append(mensagem_right.position[4])
+        msg.position.append(mensagem_right.position[5])
+        msg.velocity.append(mensagem_left.velocity[0])
+        msg.velocity.append(mensagem_left.velocity[1])
+        msg.velocity.append(mensagem_left.velocity[2])
+        msg.velocity.append(mensagem_left.velocity[3])
+        msg.velocity.append(mensagem_left.velocity[4])
+        msg.velocity.append(mensagem_left.velocity[5])
+        msg.velocity.append(mensagem_right.velocity[0])
+        msg.velocity.append(mensagem_right.velocity[1])
+        msg.velocity.append(mensagem_right.velocity[2])
+        msg.velocity.append(mensagem_right.velocity[3])
+        msg.velocity.append(mensagem_right.velocity[4])
+        msg.velocity.append(mensagem_right.velocity[5])
+        msg.effort.append(mensagem_left.effort[0])
+        msg.effort.append(mensagem_left.effort[1])
+        msg.effort.append(mensagem_left.effort[2])
+        msg.effort.append(mensagem_left.effort[3])
+        msg.effort.append(mensagem_left.effort[4])
+        msg.effort.append(mensagem_left.effort[5])
+        msg.effort.append(mensagem_right.effort[0])
+        msg.effort.append(mensagem_right.effort[1])
+        msg.effort.append(mensagem_right.effort[2])
+        msg.effort.append(mensagem_right.effort[3])
+        msg.effort.append(mensagem_right.effort[4])
+        msg.effort.append(mensagem_right.effort[5])
         self.publisher_.publish(msg)
         self.i += 1
 
-mensagem = JointState()
+mensagem_left = JointState()
+mensagem_right = JointState()
 
 def main(args=None):
     rclpy.init(args=args)
