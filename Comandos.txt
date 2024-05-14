@@ -1,0 +1,20 @@
+## usb_cam ##
+ros2 run usb_cam usb_cam_node_exe --ros-args --params-file /opt/ros/humble/share/usb_cam/config/params_1.yaml
+
+## mover robô ##
+ros2 launch tm_moveit_cpp_demo tm5-700_run_moveit_cpp.launch.py robot_ip:=169.254.78.132 robot_ip:=169.254.78.131
+
+## build ##
+colcon build --cmake-clean-cache
+
+## assistente moveit ##
+ros2 launch moveit_setup_assistant setup_assistant.launch.py
+
+## pacote dieisson ##
+ros2 run ros2_mediapipe_holistic_ros mediapipe_holistic 
+
+## abrir camera ##
+cheese
+
+
+
