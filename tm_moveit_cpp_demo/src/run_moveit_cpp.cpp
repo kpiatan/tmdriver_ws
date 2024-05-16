@@ -69,41 +69,41 @@ public:
     moveit_cpp_->getPlanningSceneMonitor()->setPlanningScenePublishingFrequency(100);
 
     RCLCPP_INFO(LOGGER, "Initialize PlanningComponent");
-    moveit::planning_interface::PlanningComponent arm("left_tmr_arm", moveit_cpp_);
+    moveit::planning_interface::PlanningComponent arm_left("left_tmr_arm", moveit_cpp_);
+    moveit::planning_interface::PlanningComponent arm_right("right_tmr_arm", moveit_cpp_);
 
     // A little delay before running the plan
     rclcpp::sleep_for(std::chrono::seconds(3));
 
     // Set joint state goal
-    RCLCPP_INFO(LOGGER, "Set goal");
+    RCLCPP_INFO(LOGGER, "Set goals");
     //arm.setGoal("ready3");
-    arm.setGoal("lefthome");    
+    arm_left.setGoal("lefthome");   
+    arm_right.setGoal("righthome");  
 
     // Run actual plan
-    RCLCPP_INFO(LOGGER, "Plan to goal");
-    auto plan_solution = arm.plan();
-    if (plan_solution)
+    RCLCPP_INFO(LOGGER, "(LEFT) Plan to goal");
+    auto plan_solution_left = arm_left.plan();
+    if (plan_solution_left)
     {
-      RCLCPP_INFO(LOGGER, "arm.execute()");
-      arm.execute();
+      RCLCPP_INFO(LOGGER, "arm_left.execute()");
+      arm_left.execute();
     }
 
-    // arm.setGoal("ready2");
-    // // Run actual plan
-    // RCLCPP_INFO(LOGGER, "Plan to goal");
-    // plan_solution = arm.plan();
-    // if (plan_solution)
-    // {
-    //   RCLCPP_INFO(LOGGER, "arm.execute()");
-    //   arm.execute();
-    // }
+    RCLCPP_INFO(LOGGER, "(RIGHT) Plan to goal");
+    auto plan_solution_right = arm_right.plan();
+    if (plan_solution_right)
+    {
+      RCLCPP_INFO(LOGGER, "arm_right.execute()");
+      arm_right.execute();
+    }
 
     //Below, we simply use a long delay to wait for the previous motion to complete.
     /*rclcpp::sleep_for(std::chrono::seconds(10));   
 
     // Set joint state goal
     RCLCPP_INFO(LOGGER, "Set goal (home)");
-    arm.setGoal("home");
+    arm.setGoal("home");-
 
     // Run actual plan
     RCLCPP_INFO(LOGGER, "Plan to goal");
