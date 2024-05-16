@@ -77,9 +77,17 @@ public:
 
     // Set joint state goal
     RCLCPP_INFO(LOGGER, "Set goals");
-    //arm.setGoal("ready3");
-    arm_left.setGoal("lefthome");   
-    arm_right.setGoal("righthome");  
+    //arm_left.setGoal("lefthome");
+    arm_left.setGoal("leftready1");
+    //arm_left.setGoal("leftready2");
+    //arm_left.setGoal("leftready3");
+    //arm_right.setGoal("righthome");
+    //arm_right.setGoal("rightready1");
+    arm_right.setGoal("rightready2");
+    //arm_right.setGoal("rightready3");
+    
+    //arm_left.setGoal("lefthome");   
+    //arm_right.setGoal("righthome");  
 
     // Run actual plan
     RCLCPP_INFO(LOGGER, "(LEFT) Plan to goal");
