@@ -1,3 +1,8 @@
+## IP dos robos e PC ##
+169.254.78.131 - robô da direita
+169.254.78.132 - robô da esquerda
+169.254.78.105 - notebook
+
 ## usb_cam ##
 ros2 run usb_cam usb_cam_node_exe --ros-args --params-file /opt/ros/humble/share/usb_cam/config/params_1.yaml
 
@@ -15,6 +20,3 @@ ros2 run ros2_mediapipe_holistic_ros mediapipe_holistic
 
 ## abrir camera ##
 cheese
-
-
-

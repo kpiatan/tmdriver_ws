@@ -165,7 +165,8 @@ def generate_launch_description():
     #     ]
     # )
 
-    # joint driver
+    # joint driver 
+    # ROBO ESQUERDA
     tm_driver_node = Node(
         package='tm_driver',
         executable='tm_driver',
@@ -173,14 +174,15 @@ def generate_launch_description():
         output='screen',
         arguments=args1,
         remappings=[
-                ('/tmr_arm_controller/follow_joint_trajectory/_action/feedback', '/right_tmr_arm_controller/follow_joint_trajectory/_action/feedback'),
-                ('/tmr_arm_controller/follow_joint_trajectory/_action/status', '/right_tmr_arm_controller/follow_joint_trajectory/_action/status'),
-                ('/tmr_arm_controller/follow_joint_trajectory/_action/cancel_goal', '/right_tmr_arm_controller/follow_joint_trajectory/_action/cancel_goal'),
-                ('/tmr_arm_controller/follow_joint_trajectory/_action/get_result', '/right_tmr_arm_controller/follow_joint_trajectory/_action/get_result'),
-                ('/tmr_arm_controller/follow_joint_trajectory/_action/send_goal', '/right_tmr_arm_controller/follow_joint_trajectory/_action/send_goal'),
+                ('/tmr_arm_controller/follow_joint_trajectory/_action/feedback', '/left_tmr_arm_controller/follow_joint_trajectory/_action/feedback'),
+                ('/tmr_arm_controller/follow_joint_trajectory/_action/status', '/left_tmr_arm_controller/follow_joint_trajectory/_action/status'),
+                ('/tmr_arm_controller/follow_joint_trajectory/_action/cancel_goal', '/left_tmr_arm_controller/follow_joint_trajectory/_action/cancel_goal'),
+                ('/tmr_arm_controller/follow_joint_trajectory/_action/get_result', '/left_tmr_arm_controller/follow_joint_trajectory/_action/get_result'),
+                ('/tmr_arm_controller/follow_joint_trajectory/_action/send_goal', '/left_tmr_arm_controller/follow_joint_trajectory/_action/send_goal'),
             ]
     )
 
+    # ROBO DIREITA
     tm_driver_node2 = Node(
         package='tm_driver',
         executable='tm_driver',
@@ -209,11 +211,11 @@ def generate_launch_description():
                 ('/sta_response', '/sta_response2'),
                 ('/svr_response', '/svr_response2'),
                 ('/tool_pose', '/tool_pose2'),
-                ('/tmr_arm_controller/follow_joint_trajectory/_action/feedback', '/left_tmr_arm_controller/follow_joint_trajectory/_action/feedback'),
-                ('/tmr_arm_controller/follow_joint_trajectory/_action/status', '/left_tmr_arm_controller/follow_joint_trajectory/_action/status'),
-                ('/tmr_arm_controller/follow_joint_trajectory/_action/cancel_goal', '/left_tmr_arm_controller/follow_joint_trajectory/_action/cancel_goal'),
-                ('/tmr_arm_controller/follow_joint_trajectory/_action/get_result', '/left_tmr_arm_controller/follow_joint_trajectory/_action/get_result'),
-                ('/tmr_arm_controller/follow_joint_trajectory/_action/send_goal', '/left_tmr_arm_controller/follow_joint_trajectory/_action/send_goal'),
+                ('/tmr_arm_controller/follow_joint_trajectory/_action/feedback', '/right_tmr_arm_controller/follow_joint_trajectory/_action/feedback'),
+                ('/tmr_arm_controller/follow_joint_trajectory/_action/status', '/right_tmr_arm_controller/follow_joint_trajectory/_action/status'),
+                ('/tmr_arm_controller/follow_joint_trajectory/_action/cancel_goal', '/right_tmr_arm_controller/follow_joint_trajectory/_action/cancel_goal'),
+                ('/tmr_arm_controller/follow_joint_trajectory/_action/get_result', '/right_tmr_arm_controller/follow_joint_trajectory/_action/get_result'),
+                ('/tmr_arm_controller/follow_joint_trajectory/_action/send_goal', '/right_tmr_arm_controller/follow_joint_trajectory/_action/send_goal'),
 
             ]
     )
