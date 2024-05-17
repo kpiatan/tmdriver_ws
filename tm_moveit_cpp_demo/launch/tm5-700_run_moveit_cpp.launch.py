@@ -94,34 +94,6 @@ def generate_launch_description():
             moveit_controllers]
         )
     
-    # run_moveit_cpp_node2 = Node(
-    #     package='tm_moveit_cpp_demo',
-    #     # TODO(henningkayser): add debug argument
-    #     # prefix='xterm -e gdb --args',
-    #     executable='run_moveit_cpp2',
-    #     namespace='',
-    #     output='screen',
-    #     parameters=[
-    #         moveit_cpp_yaml_file_name,
-    #         robot_description,
-    #         robot_description_semantic2,
-    #         kinematics_yaml2,
-    #         ompl_planning_pipeline_config2,
-    #         moveit_controllers2],
-    #     remappings=[
-    #         ('/moveit_cpp/planning_scene_monitor','/moveit_cpp/planning_scene_monitor2'),
-    #         ('/moveit_cpp/publish_planning_scene','/moveit_cpp/publish_planning_scene2'),
-    #         ('/moveit_cpp/monitored_planning_scene', '/moveit_cpp/monitored_planning_scene2'),
-    #         ('/tmr_arm_controller/follow_joint_trajectory/_action/feedback', '/tmr_arm_controller/follow_joint_trajectory2/_action/feedback'),
-    #         ('/tmr_arm_controller/follow_joint_trajectory/_action/status', '/tmr_arm_controller/follow_joint_trajectory2/_action/status'),
-    #         ('/tmr_arm_controller/follow_joint_trajectory/_action/cancel_goal', '/tmr_arm_controller/follow_joint_trajectory2/_action/cancel_goal'),
-    #         ('/tmr_arm_controller/follow_joint_trajectory/_action/get_result', '/tmr_arm_controller/follow_joint_trajectory2/_action/get_result'),
-    #         ('/tmr_arm_controller/follow_joint_trajectory/_action/send_goal', '/tmr_arm_controller/follow_joint_trajectory2/_action/send_goal'),
-    #       ]
-            
-    #     )
-
-
     # RViz
     rviz_config_file = get_package_share_directory('tm_moveit_cpp_demo') + "/launch/run_moveit_cpp.rviz"
     rviz_node = Node(
@@ -144,6 +116,14 @@ def generate_launch_description():
         arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'world', 'base']
     )
 
+    static_tf_cam = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_transform_publisher_cam',
+        output='log',
+        arguments=['-0.36', '0.585', '0.76', '0.0', '0.0', '0.0', 'base', 'head_camera']
+    )
+
     # Publish TF
     robot_state_publisher = Node(
         package='robot_state_publisher',
@@ -153,17 +133,10 @@ def generate_launch_description():
         parameters=[robot_description]
     )
 
-    # robot_state_publisher2 = Node(
-    #     package='robot_state_publisher',
-    #     executable='robot_state_publisher',
-    #     name='robot_state_publisher2',
-    #     output='both',
-    #     parameters=[robot_description],
-    #     remappings=[
-    #             ('/joint_states', '/joint_states2'),
-    #             ('/robot_description', '/robot_description'),
-    #     ]
-    # )
+    usb_cam = Node(
+        package='usb_cam',
+        executable='usb_cam_node_exe'
+    )
 
     # joint driver 
     # ROBO ESQUERDA
@@ -228,6 +201,4 @@ def generate_launch_description():
     )
 
 
-    return LaunchDescription([ tm_driver_node, tm_driver_node2, static_tf, robot_state_publisher, rviz_node, run_moveit_cpp_node, jointLRpublisher])
-    #return LaunchDescription([ tm_driver_node, tm_driver_node2, static_tf, robot_state_publisher, robot_state_publisher2, rviz_node, run_moveit_cpp_node, run_moveit_cpp_node2])
-    
+    return LaunchDescription([ tm_driver_node, tm_driver_node2, static_tf, static_tf_cam, usb_cam, robot_state_publisher, rviz_node, run_moveit_cpp_node, jointLRpublisher]) 
