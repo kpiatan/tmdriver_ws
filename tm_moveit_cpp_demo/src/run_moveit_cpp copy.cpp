@@ -64,51 +64,75 @@ public:
   void run()
   {
     RCLCPP_INFO(LOGGER, "Initialize MoveItCpp");
-    moveit_cpp_ = std::make_shared<moveit::planning_interface::MoveItCpp>(node_);
+    //moveit_cpp_ = std::make_shared<moveit::planning_interface::MoveItCpp>(node_);
+    moveit_cpp_ = std::make_shared<moveit_cpp::MoveItCpp>(node_);
     moveit_cpp_->getPlanningSceneMonitor()->providePlanningSceneService();  // let RViz display query PlanningScene
     moveit_cpp_->getPlanningSceneMonitor()->setPlanningScenePublishingFrequency(100);
 
     RCLCPP_INFO(LOGGER, "Initialize PlanningComponent");
-    moveit::planning_interface::PlanningComponent arm("tmr_arm", moveit_cpp_);
+    //moveit::planning_interface::PlanningComponent arm_left("left_tmr_arm", moveit_cpp_);
+    //moveit::planning_interface::PlanningComponent arm_right("right_tmr_arm", moveit_cpp_);
+    moveit_cpp::PlanningComponent arm_left("left_tmr_arm", moveit_cpp_);
+    moveit_cpp::PlanningComponent arm_right("right_tmr_arm", moveit_cpp_);
 
     // A little delay before running the plan
     rclcpp::sleep_for(std::chrono::seconds(3));
 
-    // Create collision object, planning shouldn't be too easy
-    moveit_msgs::msg::CollisionObject collision_object;
-    collision_object.header.frame_id = "base";
-    collision_object.id = "box";
-
-    shape_msgs::msg::SolidPrimitive box;
-    box.type = box.BOX;
-    box.dimensions = { 0.1, 0.2, 0.1 };
-
-    geometry_msgs::msg::Pose box_pose;
-    box_pose.position.x = 0.7;
-    box_pose.position.y = 0.0;
-    box_pose.position.z = 0.9;
-
-    collision_object.primitives.push_back(box);
-    collision_object.primitive_poses.push_back(box_pose);
-    collision_object.operation = collision_object.ADD;
-
-    // Add object to planning scene
-    {  // Lock PlanningScene
-      planning_scene_monitor::LockedPlanningSceneRW scene(moveit_cpp_->getPlanningSceneMonitor());
-      scene->processCollisionObjectMsg(collision_object);
-    }  // Unlock PlanningScene
-
     // Set joint state goal
-    RCLCPP_INFO(LOGGER, "Set goal");
-    arm.setGoal("ready1");
+    RCLCPP_INFO(LOGGER, "Set goals");
+    //arm_left.setGoal("lefthome");
+    //arm_left.setGoal("leftready1");
+    //arm_left.setGoal("leftready2");
+    //arm_left.setGoal("leftready3");
+
+    //arm_right.setGoal("righthome");
+    //arm_right.setGoal("rightready1");
+    //arm_right.setGoal("rightready2");
+    //arm_right.setGoal("rightready3");
+    
+    //arm_left.setGoal("lefthome");   
+    arm_right.setGoal("righthome");  
+
+    // Define a sequência de goals para o braço esquerdo
+    std::vector<std::string> left_arm_goals = {"lefthome", "leftready1"};
+
+    // Itera sobre os goals do braço esquerdo
+    for (const auto& goal : left_arm_goals)
+    {
+      // Define o goal para o braço esquerdo
+      RCLCPP_INFO(LOGGER, "Definindo o goal para o braço esquerdo: %s", goal.c_str());
+      arm_left.setGoal(goal);
+
+      // Executa o plano para o braço esquerdo
+      RCLCPP_INFO(LOGGER, "(ESQUERDA) Planejando para o goal: %s", goal.c_str());
+      auto plan_solution_left = arm_left.plan();
+      if (plan_solution_left)
+      {
+        RCLCPP_INFO(LOGGER, "Executando o plano para o braço esquerdo");
+        arm_left.execute();
+      }
+      else
+      {
+        RCLCPP_ERROR(LOGGER, "Falha ao planejar para o goal: %s", goal.c_str());
+        // Lida com a falha no planejamento (por exemplo, tenta o próximo goal ou interrompe a execução)
+      }
+    }
 
     // Run actual plan
-    RCLCPP_INFO(LOGGER, "Plan to goal");
-    auto plan_solution = arm.plan();
-    if (plan_solution)
+    // RCLCPP_INFO(LOGGER, "(LEFT) Plan to goal");
+    // auto plan_solution_left = arm_left.plan();
+    // if (plan_solution_left)
+    // {
+    //   RCLCPP_INFO(LOGGER, "arm_left.execute()");
+    //   arm_left.execute();
+    // }
+
+    RCLCPP_INFO(LOGGER, "(RIGHT) Plan to goal");
+    auto plan_solution_right = arm_right.plan();
+    if (plan_solution_right)
     {
-      RCLCPP_INFO(LOGGER, "arm.execute()");
-      arm.execute();
+      RCLCPP_INFO(LOGGER, "arm_right.execute()");
+      arm_right.execute();
     }
 
     //Below, we simply use a long delay to wait for the previous motion to complete.
@@ -116,7 +140,7 @@ public:
 
     // Set joint state goal
     RCLCPP_INFO(LOGGER, "Set goal (home)");
-    arm.setGoal("home");
+    arm.setGoal("home");-
 
     // Run actual plan
     RCLCPP_INFO(LOGGER, "Plan to goal");
@@ -131,7 +155,8 @@ public:
 private:
   rclcpp::Node::SharedPtr node_;
   rclcpp::Publisher<moveit_msgs::msg::DisplayRobotState>::SharedPtr robot_state_publisher_;
-  moveit::planning_interface::MoveItCppPtr moveit_cpp_;
+  //moveit::planning_interface::MoveItCppPtr moveit_cpp_;
+  moveit_cpp::MoveItCppPtr moveit_cpp_;
 };
 
 int main(int argc, char** argv)
