@@ -90,17 +90,42 @@ public:
     //arm_right.setGoal("rightready2");
     //arm_right.setGoal("rightready3");
     
-    arm_left.setGoal("lefthome");   
-    arm_right.setGoal("righthome");  
+    //arm_left.setGoal("lefthome");   
+    arm_right.setGoal("rightready1");  
+
+    // Define a sequência de goals para o braço esquerdo
+    std::vector<std::string> left_arm_goals = {"leftready1","lefthome"};
+
+    // Itera sobre os goals do braço esquerdo
+    for (const auto& goal : left_arm_goals)
+    {
+      // Define o goal para o braço esquerdo
+      RCLCPP_INFO(LOGGER, "Definindo o goal para o braço esquerdo: %s", goal.c_str());
+      arm_left.setGoal(goal);
+
+      // Executa o plano para o braço esquerdo
+      RCLCPP_INFO(LOGGER, "(ESQUERDA) Planejando para o goal: %s", goal.c_str());
+      auto plan_solution_left = arm_left.plan();
+      if (plan_solution_left)
+      {
+        RCLCPP_INFO(LOGGER, "Executando o plano para o braço esquerdo");
+        arm_left.execute();
+      }
+      else
+      {
+        RCLCPP_ERROR(LOGGER, "Falha ao planejar para o goal: %s", goal.c_str());
+        // Lida com a falha no planejamento (por exemplo, tenta o próximo goal ou interrompe a execução)
+      }
+    }
 
     // Run actual plan
-    RCLCPP_INFO(LOGGER, "(LEFT) Plan to goal");
-    auto plan_solution_left = arm_left.plan();
-    if (plan_solution_left)
-    {
-      RCLCPP_INFO(LOGGER, "arm_left.execute()");
-      arm_left.execute();
-    }
+    // RCLCPP_INFO(LOGGER, "(LEFT) Plan to goal");
+    // auto plan_solution_left = arm_left.plan();
+    // if (plan_solution_left)
+    // {
+    //   RCLCPP_INFO(LOGGER, "arm_left.execute()");
+    //   arm_left.execute();
+    // }
 
     RCLCPP_INFO(LOGGER, "(RIGHT) Plan to goal");
     auto plan_solution_right = arm_right.plan();
