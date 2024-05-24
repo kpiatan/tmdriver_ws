@@ -121,7 +121,7 @@ def generate_launch_description():
         executable='static_transform_publisher',
         name='static_transform_publisher_cam',
         output='log',
-        arguments=['-0.36', '0.585', '0.76', '0.0', '0.0', '0.0', 'base', 'head_camera']
+        arguments=['-0.36', '0.585', '0.76', '0.0', '0.0', '0.0', 'base', 'default_cam']
     )
 
     # Publish TF
