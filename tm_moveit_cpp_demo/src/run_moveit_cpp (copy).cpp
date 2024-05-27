@@ -18,16 +18,11 @@ public:
     robot_state_publisher_ = node_->create_publisher<moveit_msgs::msg::DisplayRobotState>("display_robot_state", 1);
     joint_state_subscriber_ = node_->create_subscription<sensor_msgs::msg::JointState>(
       "/joint_statesLR", 10, std::bind(&MoveItCppDemo::jointStateCallback, this, std::placeholders::_1));
-
-    goal_left_subscriber_ = node_->create_subscription<std_msgs::msg::String>(
-      "/goal_left", 10, std::bind(&MoveItCppDemo::goalLeftCallback, this, std::placeholders::_1));
-    goal_right_subscriber_ = node_->create_subscription<std_msgs::msg::String>(
-      "/goal_right", 10, std::bind(&MoveItCppDemo::goalRightCallback, this, std::placeholders::_1));
   
     // Define goal positions and tolerances
-    goal_positions_ = {0, 0, 0, 0, 0, 0}; // Example goal positions for the joints
-    position_tolerance_ = 0.001;
-    velocity_tolerance_ = 0.001;
+    goal_positions_ = {1.0, 0.5, -1.0, 1.5, 0.0, -0.5}; // Example goal positions for the joints
+    position_tolerance_ = 0.1;
+    velocity_tolerance_ = 0.01;
   
   }
 
@@ -39,8 +34,62 @@ public:
     moveit_cpp_->getPlanningSceneMonitor()->setPlanningScenePublishingFrequency(100);
 
     RCLCPP_INFO(LOGGER, "Initialize PlanningComponent");
-    arm_left_ = std::make_shared<moveit_cpp::PlanningComponent>("left_tmr_arm", moveit_cpp_);
-    arm_right_ = std::make_shared<moveit_cpp::PlanningComponent>("right_tmr_arm", moveit_cpp_);
+    moveit_cpp::PlanningComponent arm_left("left_tmr_arm", moveit_cpp_);
+    moveit_cpp::PlanningComponent arm_right("right_tmr_arm", moveit_cpp_);
+
+    // A little delay before running the plan
+    rclcpp::sleep_for(std::chrono::seconds(3));
+
+    // Set joint state goal
+    RCLCPP_INFO(LOGGER, "Set goals");
+
+    // Define a sequence of goals for the left arm
+    std::vector<std::string> left_arm_goals = {"lefthome", "leftready1"};
+
+    // Iterate over the goals for the left arm
+    for (const auto& goal : left_arm_goals)
+    {
+      // Set the goal for the left arm
+      RCLCPP_INFO(LOGGER, "Setting goal for left arm: %s", goal.c_str());
+      arm_left.setGoal(goal);
+
+      // Plan and execute for the left arm
+      RCLCPP_INFO(LOGGER, "Planning for left arm goal: %s", goal.c_str());
+      auto plan_solution_left = arm_left.plan();
+      if (plan_solution_left)
+      {
+        RCLCPP_INFO(LOGGER, "Executing plan for left arm");
+        arm_left.execute();
+      }
+      else
+      {
+        RCLCPP_ERROR(LOGGER, "Failed to plan for left arm goal: %s", goal.c_str());
+      }
+    }
+
+    // Define a sequence of goals for the right arm
+    std::vector<std::string> right_arm_goals = {"rightready1", "rightready2"};
+
+    // Iterate over the goals for the right arm
+    for (const auto& goal : right_arm_goals)
+    {
+      // Set the goal for the right arm
+      RCLCPP_INFO(LOGGER, "Setting goal for right arm: %s", goal.c_str());
+      arm_right.setGoal(goal);
+
+      // Plan and execute for the right arm
+      RCLCPP_INFO(LOGGER, "Planning for right arm goal: %s", goal.c_str());
+      auto plan_solution_right = arm_right.plan();
+      if (plan_solution_right)
+      {
+        RCLCPP_INFO(LOGGER, "Executing plan for right arm");
+        arm_right.execute();
+      }
+      else
+      {
+        RCLCPP_ERROR(LOGGER, "Failed to plan for right arm goal: %s", goal.c_str());
+      }
+    }
   }
 
 private:
@@ -62,52 +111,10 @@ private:
     }
   }
 
-  void goalLeftCallback(const std_msgs::msg::String::SharedPtr msg)
-  {
-    RCLCPP_INFO(LOGGER, "Setting goal for left arm: %s", msg->data.c_str());
-    arm_left_->setGoal(msg->data);
-
-    // Plan and execute for the left arm
-    RCLCPP_INFO(LOGGER, "Planning for left arm goal: %s", msg->data.c_str());
-    auto plan_solution_left = arm_left_->plan();
-    if (plan_solution_left)
-    {
-      RCLCPP_INFO(LOGGER, "Executing plan for left arm");
-      arm_left_->execute();
-    }
-    else
-    {
-      RCLCPP_ERROR(LOGGER, "Failed to plan for left arm goal: %s", msg->data.c_str());
-    }
-  }
-
-  void goalRightCallback(const std_msgs::msg::String::SharedPtr msg)
-  {
-    RCLCPP_INFO(LOGGER, "Setting goal for right arm: %s", msg->data.c_str());
-    arm_right_->setGoal(msg->data);
-
-    // Plan and execute for the right arm
-    RCLCPP_INFO(LOGGER, "Planning for right arm goal: %s", msg->data.c_str());
-    auto plan_solution_right = arm_right_->plan();
-    if (plan_solution_right)
-    {
-      RCLCPP_INFO(LOGGER, "Executing plan for right arm");
-      arm_right_->execute();
-    }
-    else
-    {
-      RCLCPP_ERROR(LOGGER, "Failed to plan for right arm goal: %s", msg->data.c_str());
-    }
-  }
-
   rclcpp::Node::SharedPtr node_;
   rclcpp::Publisher<moveit_msgs::msg::DisplayRobotState>::SharedPtr robot_state_publisher_;
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_subscriber_;
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr goal_left_subscriber_;
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr goal_right_subscriber_;
   moveit_cpp::MoveItCppPtr moveit_cpp_;
-  std::shared_ptr<moveit_cpp::PlanningComponent> arm_left_;
-  std::shared_ptr<moveit_cpp::PlanningComponent> arm_right_;
 
   std::vector<double> goal_positions_;
   double position_tolerance_;

@@ -121,7 +121,7 @@ def generate_launch_description():
         executable='static_transform_publisher',
         name='static_transform_publisher_cam',
         output='log',
-        arguments=['-0.36', '0.585', '0.76', '0.0', '0.0', '0.0', 'base', 'default_cam']
+        arguments=['-0.36', '0.585', '0.76', '0.0', '0.0', '0.0', 'base', 'camera_frame']
     )
 
     # Publish TF
@@ -135,7 +135,13 @@ def generate_launch_description():
 
     usb_cam = Node(
         package='usb_cam',
-        executable='usb_cam_node_exe'
+        executable='usb_cam_node_exe',
+        name='usb_cam',
+        output='screen',
+        parameters=[{
+            'video_device': '/dev/video2',
+            'frame_id': 'camera_frame',
+        }]
     )
 
     # joint driver 

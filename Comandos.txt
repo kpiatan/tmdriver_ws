@@ -3,6 +3,9 @@
 169.254.78.132 - robô da esquerda
 169.254.78.105 - notebook
 
+## checar as câmeras ##
+v4l2-ctl --list-devices
+
 ## usb_cam ##
 ros2 run usb_cam usb_cam_node_exe --ros-args --params-file /opt/ros/humble/share/usb_cam/config/params_1.yaml
 
@@ -10,7 +13,11 @@ ros2 run usb_cam usb_cam_node_exe --ros-args --params-file /opt/ros/humble/share
 ros2 launch tm_moveit_cpp_demo tm5-700_run_moveit_cpp.launch.py robot_ip:=169.254.78.132 robot_ip:=169.254.78.131
 
 ## enviar goals ##
-ros2 action send_goal /tmr_arm_controller/follow_joint_trajectory control_msgs/action/FollowJointTrajectory "{trajectory: {joint_names: ['joint_1', 'joint_2', 'joint_3', 'joint_4', 'joint_5', 'joint_6'], points: [{positions: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], velocities: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1], accelerations: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1], effort: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], time_from_start: {sec: 2, nanosec: 0}}]}}"
+ros2 action send_goal /left_tmr_arm_controller/follow_joint_trajectory control_msgs/action/FollowJointTrajectory "{trajectory: {joint_names: ['joint_1', 'joint_2', 'joint_3', 'joint_4', 'joint_5', 'joint_6'], points: [{positions: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], velocities: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1], accelerations: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1], effort: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], time_from_start: {sec: 2, nanosec: 0}}]}}"
+ros2 action send_goal /left_tmr_arm_controller/follow_joint_trajectory control_msgs/action/FollowJointTrajectory "{trajectory: {joint_names: ['joint_1', 'joint_2', 'joint_3', 'joint_4', 'joint_5', 'joint_6'], points: [{positions: [0.0, 0.0, 1.5708, 0.0, 1.5708, 0.0], velocities: [1, 1, 1, 1, 1, 1], accelerations: [1, 1, 1, 1, 1, 1], effort: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], time_from_start: {sec: 2, nanosec: 0}}]}}"
+
+## goals no cpp ##
+ros2 topic pub --once /goal_left std_msgs/msg/String "{data: 'lefthome'}"
 
 ## build ##
 colcon build --cmake-clean-cache
