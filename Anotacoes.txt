@@ -1,0 +1,14 @@
+Quando o robô acelera muito rapidamente:
+A explicação mais provável é que isto ocorra devido a múltiplos 
+goals enviados de uma só vez. Quando enviamos um goal
+quando outro já está sendo executado, há o cálculo da trajetória
+para este novo goal partindo da posição atual. Por exemplo, se o 
+robô está dobrado para afrente e é enviado um novo goal para se
+levantar, e então antes que termina esta posição para que dobre 
+para a frente de novo, ele vai calcular a trajetória do segundo goal
+(dobrar para a frente) considerando a posição atual, que pode ser
+com o robô em uma posição intermediária. Quando completar o primeiro goal,
+o robô vai partir direto para o início da segunda trajetória calculada
+na posição errada anterior (a posição intermediária e não a final do 
+primeiro goal), portanto este movimento será bem acelerado e geralmente
+ocorrerá o infringemento do limite de velocidade (TCP).

@@ -16,18 +16,11 @@ public:
     : Node("moveit_cpp_demo_node"), node_(node)
   {
     robot_state_publisher_ = node_->create_publisher<moveit_msgs::msg::DisplayRobotState>("display_robot_state", 1);
-    joint_state_subscriber_ = node_->create_subscription<sensor_msgs::msg::JointState>(
-      "/joint_statesLR", 10, std::bind(&MoveItCppDemo::jointStateCallback, this, std::placeholders::_1));
 
     goal_left_subscriber_ = node_->create_subscription<std_msgs::msg::String>(
       "/goal_left", 10, std::bind(&MoveItCppDemo::goalLeftCallback, this, std::placeholders::_1));
     goal_right_subscriber_ = node_->create_subscription<std_msgs::msg::String>(
       "/goal_right", 10, std::bind(&MoveItCppDemo::goalRightCallback, this, std::placeholders::_1));
-  
-    // Define goal positions and tolerances
-    goal_positions_ = {0, 0, 0, 0, 0, 0}; // Example goal positions for the joints
-    position_tolerance_ = 0.001;
-    velocity_tolerance_ = 0.001;
   
   }
 
@@ -44,23 +37,6 @@ public:
   }
 
 private:
-  void jointStateCallback(const sensor_msgs::msg::JointState::SharedPtr msg)
-  {
-    bool positions_close = true;
-    bool velocities_near_zero = true;
-
-    for (size_t i = 0; i < msg->position.size(); ++i)
-    {
-      if (std::abs(msg->position[i] - goal_positions_[i]) > position_tolerance_)
-      {
-        positions_close = false;
-      }
-      if (std::abs(msg->velocity[i]) > velocity_tolerance_)
-      {
-        velocities_near_zero = false;
-      }
-    }
-  }
 
   void goalLeftCallback(const std_msgs::msg::String::SharedPtr msg)
   {
@@ -102,16 +78,12 @@ private:
 
   rclcpp::Node::SharedPtr node_;
   rclcpp::Publisher<moveit_msgs::msg::DisplayRobotState>::SharedPtr robot_state_publisher_;
-  rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_subscriber_;
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr goal_left_subscriber_;
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr goal_right_subscriber_;
   moveit_cpp::MoveItCppPtr moveit_cpp_;
   std::shared_ptr<moveit_cpp::PlanningComponent> arm_left_;
   std::shared_ptr<moveit_cpp::PlanningComponent> arm_right_;
 
-  std::vector<double> goal_positions_;
-  double position_tolerance_;
-  double velocity_tolerance_;
 };
 
 int main(int argc, char** argv)

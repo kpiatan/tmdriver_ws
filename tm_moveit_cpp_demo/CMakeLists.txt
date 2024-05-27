@@ -48,10 +48,23 @@ if (moveit_ros_planning_interface_FOUND)
     moveit_ros_planning_interface
     Boost
   )
-  install(TARGETS run_moveit_cpp
-    EXPORT export_${PROJECT_NAME}
-    DESTINATION lib/${PROJECT_NAME}
+
+  # Adicionar o executável
+  add_executable(goal_publisher_node src/goal_publisher_node.cpp)
+  ament_target_dependencies(goal_publisher_node
+    rclcpp
+    sensor_msgs
+    std_msgs
   )
+
+  # Instalar o executável
+  install(TARGETS
+    goal_publisher_node
+    DESTINATION lib/${PROJECT_NAME})
+    install(TARGETS run_moveit_cpp
+      EXPORT export_${PROJECT_NAME}
+      DESTINATION lib/${PROJECT_NAME}
+    )
 endif (moveit_ros_planning_interface_FOUND)
 endif()
 
