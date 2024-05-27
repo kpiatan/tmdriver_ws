@@ -4,7 +4,6 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <cmath> // For M_PI
 
 class GoalPublisherNode : public rclcpp::Node
 {
@@ -25,15 +24,15 @@ public:
     left_arm_goals_ = {
         {"lefthome", {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}},
         {"leftready1", {0.0, 0.0, 1.5708, 0.0, 1.5708, 0.0}},
-        {"leftready2", {0.0, 0.0, 1.5708, -1.5708, 1.5708, 0.0}},  // Example values
-        {"leftready3", {0.0, 0.0, 1.5708, 1.5708, -1.5708, 0.0}}   // Example values
+        {"leftready2", {0.0, 0.0, 1.5708, -1.5708, 1.5708, 0.0}},
+        {"leftready3", {0.0, 0.0, 1.5708, 1.5708, -1.5708, 0.0}}
     };
 
     right_arm_goals_ = {
         {"righthome", {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}},
         {"rightready1", {0.0, 0.0, 1.5708, 0.0, 1.5708, 0.0}},
-        {"rightready2", {0.0, 0.0, 1.5708, -1.5708, 1.5708, 0.0}},  // Example values
-        {"rightready3", {0.0, 0.0, 1.5708, 1.5708, -1.5708, 0.0}}   // Example values
+        {"rightready2", {0.0, 0.0, 1.5708, -1.5708, 1.5708, 0.0}},
+        {"rightready3", {0.0, 0.0, 1.5708, 1.5708, -1.5708, 0.0}}
     };
 
     left_arm_goal_sequence_ = {"lefthome", "leftready1", "lefthome", "leftready2"};
@@ -112,13 +111,20 @@ private:
   {
     if (current_left_goal_index_ < left_arm_goal_sequence_.size())
     {
-      const std::string& next_goal = left_arm_goal_sequence_[current_left_goal_index_];
-      auto message = std_msgs::msg::String();
-      message.data = next_goal;
-      RCLCPP_INFO(this->get_logger(), "Publishing goal for left arm: %s", message.data.c_str());
-      goal_left_publisher_->publish(message);
-      left_goal_reached_ = false;
-      current_left_goal_index_++;
+      if (goal_left_publisher_->get_subscription_count() > 0)
+      {
+        const std::string& next_goal = left_arm_goal_sequence_[current_left_goal_index_];
+        auto message = std_msgs::msg::String();
+        message.data = next_goal;
+        RCLCPP_INFO(this->get_logger(), "Publishing goal for left arm: %s", message.data.c_str());
+        goal_left_publisher_->publish(message);
+        left_goal_reached_ = false;
+        current_left_goal_index_++;
+      }
+      else
+      {
+        RCLCPP_WARN(this->get_logger(), "No subscribers for left arm goal");
+      }
     }
   }
 
@@ -126,13 +132,20 @@ private:
   {
     if (current_right_goal_index_ < right_arm_goal_sequence_.size())
     {
-      const std::string& next_goal = right_arm_goal_sequence_[current_right_goal_index_];
-      auto message = std_msgs::msg::String();
-      message.data = next_goal;
-      RCLCPP_INFO(this->get_logger(), "Publishing goal for right arm: %s", message.data.c_str());
-      goal_right_publisher_->publish(message);
-      right_goal_reached_ = false;
-      current_right_goal_index_++;
+      if (goal_right_publisher_->get_subscription_count() > 0)
+      {
+        const std::string& next_goal = right_arm_goal_sequence_[current_right_goal_index_];
+        auto message = std_msgs::msg::String();
+        message.data = next_goal;
+        RCLCPP_INFO(this->get_logger(), "Publishing goal for right arm: %s", message.data.c_str());
+        goal_right_publisher_->publish(message);
+        right_goal_reached_ = false;
+        current_right_goal_index_++;
+      }
+      else
+      {
+        RCLCPP_WARN(this->get_logger(), "No subscribers for right arm goal");
+      }
     }
   }
 
