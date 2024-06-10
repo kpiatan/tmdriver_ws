@@ -206,5 +206,15 @@ def generate_launch_description():
         output='both',
     )
 
+    # nao esta sendo chamado no momento
+    goalpublishernode = Node(
+        package='tm_moveit_cpp_demo',
+        executable='goal_publisher_node',
+        name='goal_publisher_node',
+        output='both',
+    )
+    
+    #return LaunchDescription([ tm_driver_node, tm_driver_node2, static_tf, static_tf_cam, usb_cam, robot_state_publisher, rviz_node, run_moveit_cpp_node, jointLRpublisher, goalpublishernode]) 
 
-    return LaunchDescription([ tm_driver_node, tm_driver_node2, static_tf, static_tf_cam, usb_cam, robot_state_publisher, rviz_node, run_moveit_cpp_node, jointLRpublisher]) 
+    # no camera
+    return LaunchDescription([ tm_driver_node, tm_driver_node2, static_tf, robot_state_publisher, rviz_node, run_moveit_cpp_node, jointLRpublisher]) 
