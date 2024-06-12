@@ -5,6 +5,10 @@ controller_names:
 left_tmr_arm_controller:
   action_ns: follow_joint_trajectory
   type: FollowJointTrajectory
+  state_publish_rate: 25
+  action_monitor_rate: 10
+  max_velocity: 5.0
+  max_acceleration: 5.0
   default: true
   joints:
     - leftjoint_1

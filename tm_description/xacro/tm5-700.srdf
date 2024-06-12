@@ -17,13 +17,13 @@
         <link name="leftlink_4"/>
         <link name="leftlink_5"/>
         <link name="leftlink_6"/>
-        <joint name="leftbase_fixed_joint"/>
-        <joint name="leftjoint_1"/>
-        <joint name="leftjoint_2"/>
-        <joint name="leftjoint_3"/>
-        <joint name="leftjoint_4"/>
-        <joint name="leftjoint_5"/>
-        <joint name="leftjoint_6"/>
+        <joint name="leftbase_fixed_joint" max_velocity="2.0" max_acceleration="5.0" />
+        <joint name="leftjoint_1" max_velocity="2.0" max_acceleration="5.0" />
+        <joint name="leftjoint_2" max_velocity="2.0" max_acceleration="5.0" />
+        <joint name="leftjoint_3" max_velocity="2.0" max_acceleration="5.0" />
+        <joint name="leftjoint_4" max_velocity="2.0" max_acceleration="5.0" />
+        <joint name="leftjoint_5" max_velocity="2.0" max_acceleration="5.0" />
+        <joint name="leftjoint_6" max_velocity="2.0" max_acceleration="5.0" />
     </group>
     <group name="right">
         <link name="rightlink_0"/>
