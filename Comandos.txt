@@ -9,6 +9,9 @@ ros2 run tm_moveit_cpp_demo goal_publisher_node
 169.254.78.132 - robô da esquerda
 169.254.78.105 - notebook
 
+## senha robôs ##
+109digitaltwin
+
 ## checar as câmeras ##
 v4l2-ctl --list-devices
 
