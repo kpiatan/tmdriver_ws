@@ -1,3 +1,9 @@
+## conectar aos robôs e moveit ##
+ros2 launch tm_moveit_cpp_demo tm5-700_run_moveit_cpp.launch.py robot_ip:=169.254.78.132 robot_ip:=169.254.78.131
+
+## publicar goals ##
+ros2 run tm_moveit_cpp_demo goal_publisher_node 
+
 ## IP dos robos e PC ##
 169.254.78.131 - robô da direita
 169.254.78.132 - robô da esquerda
@@ -8,9 +14,6 @@ v4l2-ctl --list-devices
 
 ## usb_cam ##
 ros2 run usb_cam usb_cam_node_exe --ros-args --params-file /opt/ros/humble/share/usb_cam/config/params_1.yaml
-
-## mover robô ##
-ros2 launch tm_moveit_cpp_demo tm5-700_run_moveit_cpp.launch.py robot_ip:=169.254.78.132 robot_ip:=169.254.78.131
 
 ## enviar goals ##
 ros2 action send_goal /left_tmr_arm_controller/follow_joint_trajectory control_msgs/action/FollowJointTrajectory "{trajectory: {joint_names: ['joint_1', 'joint_2', 'joint_3', 'joint_4', 'joint_5', 'joint_6'], points: [{positions: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], velocities: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1], accelerations: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1], effort: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], time_from_start: {sec: 2, nanosec: 0}}]}}"
