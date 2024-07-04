@@ -1,8 +1,11 @@
-## conectar aos robôs e moveit ##
+## conectar aos robôs com moveit ##
 ros2 launch tm_moveit_cpp_demo tm5-700_run_moveit_cpp.launch.py robot_ip:=169.254.78.132 robot_ip:=169.254.78.131
 
 ## publicar goals ##
 ros2 run tm_moveit_cpp_demo goal_publisher_node 
+
+## conectar ao robô da esquerda sem moveit ##
+ros2 run tm_driver tm_driver robot_ip:=169.254.78.132
 
 ## IP dos robos e PC ##
 169.254.78.131 - robô da direita
@@ -19,8 +22,8 @@ v4l2-ctl --list-devices
 ros2 run usb_cam usb_cam_node_exe --ros-args --params-file /opt/ros/humble/share/usb_cam/config/params_1.yaml
 
 ## enviar goals ##
-ros2 action send_goal /left_tmr_arm_controller/follow_joint_trajectory control_msgs/action/FollowJointTrajectory "{trajectory: {joint_names: ['joint_1', 'joint_2', 'joint_3', 'joint_4', 'joint_5', 'joint_6'], points: [{positions: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], velocities: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1], accelerations: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1], effort: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], time_from_start: {sec: 2, nanosec: 0}}]}}"
-ros2 action send_goal /left_tmr_arm_controller/follow_joint_trajectory control_msgs/action/FollowJointTrajectory "{trajectory: {joint_names: ['joint_1', 'joint_2', 'joint_3', 'joint_4', 'joint_5', 'joint_6'], points: [{positions: [0.0, 0.0, 1.5708, 0.0, 1.5708, 0.0], velocities: [1, 1, 1, 1, 1, 1], accelerations: [1, 1, 1, 1, 1, 1], effort: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], time_from_start: {sec: 2, nanosec: 0}}]}}"
+ros2 action send_goal /tmr_arm_controller/follow_joint_trajectory control_msgs/action/FollowJointTrajectory "{trajectory: {joint_names: ['joint_1', 'joint_2', 'joint_3', 'joint_4', 'joint_5', 'joint_6'], points: [{positions: [0.0, 0.0, 1.5708, 0.0, 0.0, 0.0], velocities: [1, 1, 1, 1, 1, 1], accelerations: [1, 1, 1, 1, 1, 1], effort: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], time_from_start: {sec: 1, nanosec: 0}}]}}"
+ros2 action send_goal /left_tmr_arm_controller/follow_joint_trajectory control_msgs/action/FollowJointTrajectory "{trajectory: {joint_names: ['leftjoint_1', 'leftjoint_2', 'leftjoint_3', 'leftjoint_4', 'leftjoint_5', 'leftjoint_6'], points: [{positions: [0.0, 0.0, 1.5708, -1.5708, 0.0, 0.0], velocities: [3, 3, 3, 3, 3, 3], accelerations: [3, 3, 3, 3, 3, 3], time_from_start: {sec: 3, nanosec: 0}}]}}"
 
 ## goals no cpp ##
 ros2 topic pub --once /goal_left std_msgs/msg/String "{data: 'lefthome'}"
