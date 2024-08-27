@@ -34,6 +34,10 @@
     <xacro:tm5-700 ns="$(arg ns)" prefix="right" />
   </xacro:if>
 
+  <xacro:tm5-700 ns="$(arg ns)" prefix="left1" color="green" format="stl"/>
+
+  <xacro:tm5-700 ns="$(arg ns)" prefix="right1" color="green" format="stl"/>
+
 
   <!-- Arm.color.stl -->
   <xacro:unless value="${color == 'none'}">
@@ -56,143 +60,15 @@
     <origin rpy="0.000000 0.000000 0.000000" xyz="0.000000 1.175000 0.000000"/>
   </joint>
 
-  <!-- TORRE DE HANOI -->
-  <link name="hanoi_base">
-    <visual>
-      <origin xyz="-0.058 -0.044 -0.01" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://tm_description/meshes/hanoi/base.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="Color_hbase">
-        <color rgba="0.643 0.454 0.286 1"/>
-      </material>
-    </visual>
-  </link>
-
-  <!-- arrumar medidas do robo esq para pino1 da torre -->
-  <joint name="Jmesa" type="fixed">
-    <origin xyz="0.3 0.4 0" rpy="0 0 1.57" />
+  <joint name="base_to_left1" type="fixed">
     <parent link="base"/>
-    <child link="hanoi_base"/>
+    <child link="left1base"/>
+    <origin rpy="0.000000 0.000000 0.000000" xyz="-1.000000 0.000000 0.000000"/>
   </joint>
-
-  <joint name="Jp1" type="prismatic">
-    <origin xyz="0 0 0" rpy="0 0 0" />
-    <limit effort="30" velocity="1.0" lower="-2.2" upper="0.7" />
-    <parent link="hanoi_base"/>
-    <child link="hanoi_p1"/>
+  <joint name="base_to_right1" type="fixed">
+    <parent link="base"/>
+    <child link="right1base"/>
+    <origin rpy="0.000000 0.000000 0.000000" xyz="-1.000000 1.175000 0.000000"/>
   </joint>
-
-  <link name="hanoi_p1">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://tm_description/meshes/hanoi/peca_vermelha_1.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <!--material name="Peca_amarela">
-        <color rgba="1 0.788 0.121 1"/-->
-      <!--material name="Peca_azul">
-        <color rgba="0 0.352 0.580 1"/-->
-      <material name="Peca_vermelha">
-        <color rgba="0.901 0.168 0.156 1"/>
-      </material>
-    </visual>
-  </link>
-
-  <link name="hanoi_p2">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://tm_description/meshes/hanoi/peca_vermelha_2.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="Peca_vermelha">
-        <color rgba="0.901 0.168 0.156 1"/>
-      </material>
-    </visual>
-  </link>
-
-  <joint name="Jp2" type="prismatic">
-    <origin xyz="0 0 0.013" rpy="0 0 0" />
-    <limit effort="30" velocity="1.0" lower="-2.2" upper="0.7" />
-    <parent link="hanoi_base"/>
-    <child link="hanoi_p2"/>
-  </joint>
-
-  <link name="hanoi_p3">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://tm_description/meshes/hanoi/peca_vermelha_3.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="Peca_vermelha">
-        <color rgba="0.901 0.168 0.156 1"/>
-      </material>
-    </visual>
-  </link>
-
-  <joint name="Jp3" type="prismatic">
-    <origin xyz="0 0 0.026" rpy="0 0 0" />
-    <limit effort="30" velocity="1.0" lower="-2.2" upper="0.7" />
-    <parent link="hanoi_base"/>
-    <child link="hanoi_p3"/>
-  </joint>
-
-  <link name="hanoi_p4">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://tm_description/meshes/hanoi/peca_verde_1.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="Peca_verde">
-        <color rgba="0.670 0.858 0.160 1"/>
-      </material>
-    </visual>
-  </link>
-
-  <joint name="Jp4" type="prismatic">
-    <origin xyz="0.088 0 0" rpy="0 0 0" />
-    <limit effort="30" velocity="1.0" lower="-2.2" upper="0.7" />
-    <parent link="hanoi_base"/>
-    <child link="hanoi_p4"/>
-  </joint>
-
-  <link name="hanoi_p5">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://tm_description/meshes/hanoi/peca_verde_2.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="Peca_verde">
-        <color rgba="0.670 0.858 0.160 1"/>
-      </material>
-    </visual>
-  </link>
-
-  <joint name="Jp5" type="prismatic">
-    <origin xyz="0.088 0 0.013" rpy="0 0 0" />
-    <limit effort="30" velocity="1.0" lower="-2.2" upper="0.7" />
-    <parent link="hanoi_base"/>
-    <child link="hanoi_p5"/>
-  </joint>
-
-  <link name="hanoi_p6">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <mesh filename="package://tm_description/meshes/hanoi/peca_verde_3.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="Peca_verde">
-        <color rgba="0.670 0.858 0.160 1"/>
-      </material>
-    </visual>
-  </link>
-
-  <joint name="Jp6" type="prismatic">
-    <origin xyz="0.088 0 0.026" rpy="0 0 0" />
-    <limit effort="30" velocity="1.0" lower="-2.2" upper="0.7" />
-    <parent link="hanoi_base"/>
-    <child link="hanoi_p6"/>
-  </joint>
-
 
 </robot>
