@@ -38,6 +38,9 @@
 
   <xacro:tm5-700 ns="$(arg ns)" prefix="right1" color="green" format="stl"/>
 
+  <xacro:tm5-700 ns="$(arg ns)" prefix="left2" color="yellow" format="stl"/>
+
+  <xacro:tm5-700 ns="$(arg ns)" prefix="right2" color="yellow" format="stl"/>
 
   <!-- Arm.color.stl -->
   <xacro:unless value="${color == 'none'}">
@@ -63,12 +66,23 @@
   <joint name="base_to_left1" type="fixed">
     <parent link="base"/>
     <child link="left1base"/>
-    <origin rpy="0.000000 0.000000 0.000000" xyz="-1.000000 0.000000 0.000000"/>
+    <origin rpy="0.000000 0.000000 0.000000" xyz="-1.500000 0.000000 0.000000"/>
   </joint>
   <joint name="base_to_right1" type="fixed">
     <parent link="base"/>
     <child link="right1base"/>
-    <origin rpy="0.000000 0.000000 0.000000" xyz="-1.000000 1.175000 0.000000"/>
+    <origin rpy="0.000000 0.000000 0.000000" xyz="-1.500000 1.175000 0.000000"/>
+  </joint>
+
+  <joint name="base_to_left2" type="fixed">
+    <parent link="base"/>
+    <child link="left2base"/>
+    <origin rpy="0.000000 0.000000 0.000000" xyz="-3.000000 0.000000 0.000000"/>
+  </joint>
+  <joint name="base_to_right2" type="fixed">
+    <parent link="base"/>
+    <child link="right2base"/>
+    <origin rpy="0.000000 0.000000 0.000000" xyz="-3.000000 1.175000 0.000000"/>
   </joint>
 
 </robot>
