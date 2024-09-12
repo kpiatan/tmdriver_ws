@@ -30,7 +30,7 @@ class HolisticMediaPipe(Node):
         self.mp_drawing_styles = mp.solutions.drawing_styles
         self.mp_hands = mp.solutions.hands
         self.bridge = CvBridge()
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(2)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, PARAMS["image_width"])
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, PARAMS["image_height"])
 
@@ -66,8 +66,8 @@ class HolisticMediaPipe(Node):
         if PARAMS["pub_landmark_output"]:
             landmarks = MediaPipeHolistic()
 
-            if results.face_landmarks:
-                self.populate_landmarks(results.face_landmarks, landmarks.face_landmarks)
+            #if results.face_landmarks:
+            #    self.populate_landmarks(results.face_landmarks, landmarks.face_landmarks)
 
             if results.left_hand_landmarks:
                 self.populate_landmarks(results.left_hand_landmarks, landmarks.left_hand_landmarks)

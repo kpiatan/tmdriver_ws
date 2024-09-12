@@ -33,7 +33,7 @@
   <xacro:if value="${color == 'none'}">
     <xacro:tm5-700 ns="$(arg ns)" prefix="right" />
   </xacro:if>
-
+  
   <xacro:tm5-700 ns="$(arg ns)" prefix="left1" color="green" format="stl"/>
 
   <xacro:tm5-700 ns="$(arg ns)" prefix="right1" color="green" format="stl"/>
@@ -41,7 +41,7 @@
   <xacro:tm5-700 ns="$(arg ns)" prefix="left2" color="yellow" format="stl"/>
 
   <xacro:tm5-700 ns="$(arg ns)" prefix="right2" color="yellow" format="stl"/>
-
+  
   <!-- Arm.color.stl -->
   <xacro:unless value="${color == 'none'}">
     <xacro:tm5-700 ns="$(arg ns)" prefix="left" color="${color}" format="stl" />
@@ -63,6 +63,7 @@
     <origin rpy="0.000000 0.000000 0.000000" xyz="0.000000 1.175000 0.000000"/>
   </joint>
 
+  
   <joint name="base_to_left1" type="fixed">
     <parent link="base"/>
     <child link="left1base"/>
@@ -84,5 +85,7 @@
     <child link="right2base"/>
     <origin rpy="0.000000 0.000000 0.000000" xyz="-3.000000 1.175000 0.000000"/>
   </joint>
+
+  
 
 </robot>
