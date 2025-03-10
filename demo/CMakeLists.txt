@@ -265,3 +265,13 @@ install(TARGETS
 )
 
 ament_package()
+
+install(PROGRAMS
+  scripts/set_positions_left.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(PROGRAMS
+  scripts/set_positions_right.py
+  DESTINATION lib/${PROJECT_NAME}
+)
