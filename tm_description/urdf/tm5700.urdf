@@ -125,13 +125,13 @@
   <link name="leftlink_0">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/visual/tm5-base.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/visual/tm5-base.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/collision/tm5-base_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/collision/tm5-base_c.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -152,13 +152,13 @@
   <link name="leftlink_1">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/visual/tmr_400w_01.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/visual/tmr_400w_01.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/collision/tmr_400w_01_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/collision/tmr_400w_01_c.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -179,13 +179,13 @@
   <link name="leftlink_2">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-700/visual/tm5-700_arm1.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-700/visual/tm5-700_arm1.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-700/collision/tm5-700_arm1_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-700/collision/tm5-700_arm1_c.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -206,13 +206,13 @@
   <link name="leftlink_3">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-700/visual/tm5-700_arm2.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-700/visual/tm5-700_arm2.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-700/collision/tm5-700_arm2_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-700/collision/tm5-700_arm2_c.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -233,13 +233,13 @@
   <link name="leftlink_4">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/visual/tmr_100w_01.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/visual/tmr_100w_01.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/collision/tmr_100w_01_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/collision/tmr_100w_01_c.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -260,13 +260,13 @@
   <link name="leftlink_5">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/visual/tmr_100w_02.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/visual/tmr_100w_02.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/collision/tmr_100w_02_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/collision/tmr_100w_02_c.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -287,13 +287,13 @@
   <link name="leftlink_6">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/visual/tmr_ee.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/visual/tmr_ee.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/collision/tmr_ee_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/collision/tmr_ee_c.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -319,13 +319,13 @@
   <link name="rightlink_0">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/visual/tm5-base.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/visual/tm5-base.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/collision/tm5-base_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/collision/tm5-base_c.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -346,13 +346,13 @@
   <link name="rightlink_1">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/visual/tmr_400w_01.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/visual/tmr_400w_01.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/collision/tmr_400w_01_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/collision/tmr_400w_01_c.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -373,13 +373,13 @@
   <link name="rightlink_2">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-700/visual/tm5-700_arm1.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-700/visual/tm5-700_arm1.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-700/collision/tm5-700_arm1_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-700/collision/tm5-700_arm1_c.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -400,13 +400,13 @@
   <link name="rightlink_3">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-700/visual/tm5-700_arm2.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-700/visual/tm5-700_arm2.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-700/collision/tm5-700_arm2_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-700/collision/tm5-700_arm2_c.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -427,13 +427,13 @@
   <link name="rightlink_4">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/visual/tmr_100w_01.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/visual/tmr_100w_01.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/collision/tmr_100w_01_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/collision/tmr_100w_01_c.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -454,13 +454,13 @@
   <link name="rightlink_5">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/visual/tmr_100w_02.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/visual/tmr_100w_02.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/collision/tmr_100w_02_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/collision/tmr_100w_02_c.stl"/>
       </geometry>
     </collision>
     <inertial>
@@ -481,13 +481,13 @@
   <link name="rightlink_6">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/visual/tmr_ee.obj"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/visual/tmr_ee.obj"/>
       </geometry>
       <material name="none"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/tm5-900/collision/tmr_ee_c.stl"/>
+        <mesh filename="/home/piatan/tmdriver_ws/src/tm_description/meshes/tm5-900/collision/tmr_ee_c.stl"/>
       </geometry>
     </collision>
     <inertial>
