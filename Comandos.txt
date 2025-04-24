@@ -2,7 +2,11 @@
 ros2 run tm_driver tm_driver robot_ip:=169.254.78.132
 ros2 run demo set_positions_left.py 0 0 0 0 0 0 1
 ros2 run demo set_positions_left.py 0 0 1.58 0 1.58 0 1
+ros2 run demo set_positions_right.py 0 0 1.58 0 1.58 0 1
 ros2 run demo demo_set_positions
+
+ros2 run demo set_positions_left.py 0 0 1.58 0 1.58 0 1 & ros2 run demo set_positions_right.py 0 0 1.58 0 1.58 0 1
+ros2 run demo set_positions_left.py 0 0 0 0 0 0 1 & ros2 run demo set_positions_right.py 0 0 0 0 0 0 1
 
 ## conectar aos robôs com moveit ##
 ros2 launch tm_moveit_cpp_demo tm5-700_run_moveit_cpp.launch.py robot_ip:=169.254.78.132 robot_ip:=169.254.78.131
