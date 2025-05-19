@@ -75,11 +75,11 @@ class HolisticMediaPipe(Node):
             if results.right_hand_landmarks:
                 self.populate_landmarks(results.right_hand_landmarks, landmarks.right_hand_landmarks)
 
-            if results.pose_landmarks:
-                self.populate_landmarks(results.pose_landmarks, landmarks.pose_landmarks)
+            #if results.pose_landmarks:
+             #   self.populate_landmarks(results.pose_landmarks, landmarks.pose_landmarks)
 
-            if results.pose_world_landmarks:
-                self.populate_landmarks(results.pose_world_landmarks, landmarks.pose_world_landmarks)
+            #if results.pose_world_landmarks:
+             #   self.populate_landmarks(results.pose_world_landmarks, landmarks.pose_world_landmarks)
 
             self.publisher_output_mediapipe.publish(landmarks)
 
