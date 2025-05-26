@@ -17,7 +17,7 @@ class HandLandmarkerRVizNode(Node):
         super().__init__('hand_landmarker_rviz_node')
         self.publisher_ = self.create_publisher(MarkerArray, 'hand_landmarks_markers', 10)
         
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(2)
         if not self.cap.isOpened():
             self.get_logger().error('Não foi possível abrir a câmera.')
             return
