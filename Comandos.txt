@@ -50,3 +50,9 @@ ros2 run ros2_mediapipe_holistic_ros mediapipe_holistic
 
 ## abrir camera ##
 cheese
+
+## pacote mãos ##
+ros2 run hand_landmarker_ros hand_landmarker_node
+
+## static tf cameras ##
+ros2 run tf2_ros static_transform_publisher -0.36 0.585 0.76 -1.5708 0.0 1.5708 base camera_frame
