@@ -17,7 +17,7 @@ class HandLandmarkerRVizNode(Node):
         super().__init__('hand_landmarker_rviz_node')
         self.publisher_ = self.create_publisher(MarkerArray, 'hand_landmarks_markers', 10)
         
-        self.cap = cv2.VideoCapture(2)
+        self.cap = cv2.VideoCapture(0)
         if not self.cap.isOpened():
             self.get_logger().error('Não foi possível abrir a câmera.')
             return
@@ -117,7 +117,42 @@ class HandLandmarkerRVizNode(Node):
 
             if results.multi_hand_landmarks:
                 for i, hand_landmarks in enumerate(results.multi_hand_landmarks):
-                    self.mp_drawing.draw_landmarks(frame, hand_landmarks, self.mp_hands.HAND_CONNECTIONS)
+                    h, w, _ = frame.shape
+
+                    # Desenha landmarks (esferas) com cores por dedo
+                    for idx, lm in enumerate(hand_landmarks.landmark):
+                        cx, cy = int(lm.x * w), int(lm.y * h)
+                        if idx in [9, 10, 11, 12]:       # médio
+                            color = (255, 0, 0)          # azul (BGR)
+                        elif idx in [13, 14, 15, 16]:    # anelar
+                            color = (255, 0, 0)        
+                        elif idx in [17, 18, 19, 20]:    # mínimo
+                            color = (255, 0, 0)        
+                        else:                             # outros dedos
+                            color = (0, 0, 0)          
+                        cv2.circle(frame, (cx, cy), 5, color, -1)
+
+                    # Desenha conexões (linhas) com cores por dedo
+                    for connection in self.hand_connections:
+                        start_idx, end_idx = connection
+                        start_lm = hand_landmarks.landmark[start_idx]
+                        end_lm = hand_landmarks.landmark[end_idx]
+                        x0, y0 = int(start_lm.x * w), int(start_lm.y * h)
+                        x1, y1 = int(end_lm.x * w), int(end_lm.y * h)
+
+                        # Escolhe cor baseado no dedo
+                        if any(i in [9, 10, 11, 12] for i in [start_idx, end_idx]):
+                            line_color = (255, 0, 0)      # azul
+                        elif any(i in [13, 14, 15, 16] for i in [start_idx, end_idx]):
+                            line_color = (255, 0, 0)    
+                        elif any(i in [17, 18, 19, 20] for i in [start_idx, end_idx]):
+                            line_color = (255, 0, 0)    
+                        else:
+                            line_color = (0, 0, 0)        # preto
+
+                        cv2.line(frame, (x0, y0), (x1, y1), line_color, 2)
+
+                    # Publica no RViz também
                     self.publish_landmarks_and_connections(hand_landmarks, hand_id=i)
 
             cv2.imshow('Hand Landmarker', frame)
@@ -129,6 +164,7 @@ class HandLandmarkerRVizNode(Node):
 
         self.cap.release()
         cv2.destroyAllWindows()
+
 
 def main(args=None):
     rclpy.init(args=args)
