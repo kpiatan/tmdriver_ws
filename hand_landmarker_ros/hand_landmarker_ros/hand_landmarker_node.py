@@ -2,26 +2,34 @@
 # -*- coding: utf-8 -*-
 """
 Nó ROS2 que captura vídeo da câmera, detecta landmarks da mão com MediaPipe,
-e publica as landmarks e conexões no formato visualization_msgs/MarkerArray para visualizar no RViz.
+desenha no OpenCV com cores diferentes para cada dedo e cada mão,
+e publica o estado dos dedos médio, anelar e mínimo em tópicos separados:
+- "mao_esquerda"
+- "mao_direita"
 """
+
 import rclpy
 from rclpy.node import Node
-
 import cv2
 import mediapipe as mp
-from visualization_msgs.msg import Marker, MarkerArray
-from std_msgs.msg import ColorRGBA
+from std_msgs.msg import String
 
-class HandLandmarkerRVizNode(Node):
+
+class HandGestureNode(Node):
     def __init__(self):
-        super().__init__('hand_landmarker_rviz_node')
-        self.publisher_ = self.create_publisher(MarkerArray, 'hand_landmarks_markers', 10)
-        
-        self.cap = cv2.VideoCapture(0)
+        super().__init__('hand_gesture_node')
+
+        # Publishers para cada mão
+        self.pub_left = self.create_publisher(String, 'mao_esquerda', 10)
+        self.pub_right = self.create_publisher(String, 'mao_direita', 10)
+
+        # Câmera
+        self.cap = cv2.VideoCapture(2) # 0 camera do note, 2 camera
         if not self.cap.isOpened():
             self.get_logger().error('Não foi possível abrir a câmera.')
             return
 
+        # MediaPipe Hands
         self.mp_hands = mp.solutions.hands
         self.hands = self.mp_hands.Hands(
             static_image_mode=False,
@@ -29,76 +37,73 @@ class HandLandmarkerRVizNode(Node):
             min_detection_confidence=0.5,
             min_tracking_confidence=0.5
         )
-        self.mp_drawing = mp.solutions.drawing_utils
         self.hand_connections = self.mp_hands.HAND_CONNECTIONS
 
-    def create_sphere_marker(self, x, y, z, ns, id_, r=0.0, g=1.0, b=0.0):
-        marker = Marker()
-        marker.header.frame_id = "camera_frame"
-        marker.header.stamp = self.get_clock().now().to_msg()
-        marker.ns = ns
-        marker.id = id_
-        marker.type = Marker.SPHERE
-        marker.action = Marker.ADD
-        marker.pose.position.x = x
-        marker.pose.position.y = y
-        marker.pose.position.z = z
-        marker.pose.orientation.w = 1.0
-        marker.scale.x = 0.02
-        marker.scale.y = 0.02
-        marker.scale.z = 0.02
-        marker.color = ColorRGBA(r=r, g=g, b=b, a=1.0)
-        marker.lifetime.sec = 0
-        marker.lifetime.nanosec = int(1e8)
-        return marker
+    def is_flexed(self, tip, pip):
+        """
+        Retorna True se o dedo estiver dobrado.
+        Ajustado para câmera de cima (dorso da mão).
+        """
+        return tip.y < pip.y
 
-    def create_line_marker(self, points, ns, id_):
-        marker = Marker()
-        marker.header.frame_id = "camera_frame"
-        marker.header.stamp = self.get_clock().now().to_msg()
-        marker.ns = ns
-        marker.id = id_
-        marker.type = Marker.LINE_LIST
-        marker.action = Marker.ADD
-        marker.scale.x = 0.005  # largura da linha
-        marker.color = ColorRGBA(r=1.0, g=0.0, b=0.0, a=1.0)  # vermelho
-        marker.points = points
-        marker.lifetime.sec = 0
-        marker.lifetime.nanosec = int(1e8)
-        return marker
+    def process_hand(self, frame, hand_landmarks, handedness):
+        """
+        Desenha landmarks e verifica estado dos dedos médio, anelar e mínimo.
+        Publica o resultado no tópico correspondente.
+        """
+        h, w, _ = frame.shape
 
-    def publish_landmarks_and_connections(self, hand_landmarks, hand_id=0):
-        marker_array = MarkerArray()
+        # Cor base dependendo da mão
+        if handedness == "Left":
+            base_color = (255, 0, 0)   # azul
+        else:
+            base_color = (0, 0, 255)   # vermelho
 
-        ns = f"hand_{hand_id}"
-        landmarks_points = []
+        # --- Desenho das landmarks com cores por dedo ---
+        for idx, lm in enumerate(hand_landmarks.landmark):
+            cx, cy = int(lm.x * w), int(lm.y * h)
 
-        # Cria marcadores para cada landmark (esferas)
-        for i, lm in enumerate(hand_landmarks.landmark):
-            # Convertendo coordenadas para o sistema do RViz
-            x = lm.x - 0.5
-            y = 0.5 - lm.y
-            z = -lm.z
-            landmarks_points.append((x, y, z))
+            if idx in [9, 10, 11, 12]:
+                color = (0, 255, 0)         # médio verde
+            elif idx in [13, 14, 15, 16]:
+                color = (0, 255, 255)       # anelar amarelo
+            elif idx in [17, 18, 19, 20]:
+                color = (255, 0, 255)       # mínimo magenta
+            else:
+                color = base_color          # outros pontos na cor da mão
 
-            sphere_marker = self.create_sphere_marker(x, y, z, ns, i)
-            marker_array.markers.append(sphere_marker)
+            cv2.circle(frame, (cx, cy), 5, color, -1)
 
-        # Cria marcadores para as conexões (linhas)
-        # Cada conexão é uma tupla (start_idx, end_idx)
-        for idx, connection in enumerate(self.hand_connections):
+        # --- Desenho das conexões ---
+        for connection in self.hand_connections:
             start_idx, end_idx = connection
-            p_start = landmarks_points[start_idx]
-            p_end = landmarks_points[end_idx]
+            start_lm = hand_landmarks.landmark[start_idx]
+            end_lm = hand_landmarks.landmark[end_idx]
+            x0, y0 = int(start_lm.x * w), int(start_lm.y * h)
+            x1, y1 = int(end_lm.x * w), int(end_lm.y * h)
+            cv2.line(frame, (x0, y0), (x1, y1), base_color, 2)
 
-            from geometry_msgs.msg import Point
-            line_points = [Point(x=p_start[0], y=p_start[1], z=p_start[2]),
-                           Point(x=p_end[0], y=p_end[1], z=p_end[2])]
+        # --- Detecta flexão dos dedos ---
+        médio_flex = self.is_flexed(hand_landmarks.landmark[12], hand_landmarks.landmark[10])
+        anelar_flex = self.is_flexed(hand_landmarks.landmark[16], hand_landmarks.landmark[14])
+        mínimo_flex = self.is_flexed(hand_landmarks.landmark[20], hand_landmarks.landmark[18])
 
-            line_marker = self.create_line_marker(line_points, ns, idx + 1000)
-            marker_array.markers.append(line_marker)
+        estado = {
+            "Médio": "Dobrado" if médio_flex else "Estendido",
+            "Anelar": "Dobrado" if anelar_flex else "Estendido",
+            "Mínimo": "Dobrado" if mínimo_flex else "Estendido",
+        }
 
-        self.publisher_.publish(marker_array)
+        # --- Publica no tópico correspondente ---
+        msg = String()
+        msg.data = f"Mão {handedness} | " + " | ".join([f"{d}:{s}" for d, s in estado.items()])
+        if handedness == "Left":
+            self.pub_left.publish(msg)
+        else:
+            self.pub_right.publish(msg)
+
+        # Debug no terminal
+        self.get_logger().info(msg.data)
 
     def run(self):
         self.get_logger().info('Iniciando vídeo. Pressione Q para sair.')
@@ -109,55 +114,22 @@ class HandLandmarkerRVizNode(Node):
                 break
 
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frame_rgb.flags.writeable = False
             results = self.hands.process(frame_rgb)
-            frame_rgb.flags.writeable = True
 
-            frame = cv2.cvtColor(frame_rgb, cv2.COLOR_RGB2BGR)
+            if results.multi_hand_landmarks and results.multi_handedness:
+                for hand_landmarks, handedness in zip(results.multi_hand_landmarks,
+                                                     results.multi_handedness):
+                    label = handedness.classification[0].label
+                    # Corrige inversão (MediaPipe espelha)
+                    if label == "Left":
+                        label = "Right"
+                    else:
+                        label = "Left"
 
-            if results.multi_hand_landmarks:
-                for i, hand_landmarks in enumerate(results.multi_hand_landmarks):
-                    h, w, _ = frame.shape
+                    self.process_hand(frame, hand_landmarks, label)
 
-                    # Desenha landmarks (esferas) com cores por dedo
-                    for idx, lm in enumerate(hand_landmarks.landmark):
-                        cx, cy = int(lm.x * w), int(lm.y * h)
-                        if idx in [9, 10, 11, 12]:       # médio
-                            color = (255, 0, 0)          # azul (BGR)
-                        elif idx in [13, 14, 15, 16]:    # anelar
-                            color = (255, 0, 0)        
-                        elif idx in [17, 18, 19, 20]:    # mínimo
-                            color = (255, 0, 0)        
-                        else:                             # outros dedos
-                            color = (0, 0, 0)          
-                        cv2.circle(frame, (cx, cy), 5, color, -1)
-
-                    # Desenha conexões (linhas) com cores por dedo
-                    for connection in self.hand_connections:
-                        start_idx, end_idx = connection
-                        start_lm = hand_landmarks.landmark[start_idx]
-                        end_lm = hand_landmarks.landmark[end_idx]
-                        x0, y0 = int(start_lm.x * w), int(start_lm.y * h)
-                        x1, y1 = int(end_lm.x * w), int(end_lm.y * h)
-
-                        # Escolhe cor baseado no dedo
-                        if any(i in [9, 10, 11, 12] for i in [start_idx, end_idx]):
-                            line_color = (255, 0, 0)      # azul
-                        elif any(i in [13, 14, 15, 16] for i in [start_idx, end_idx]):
-                            line_color = (255, 0, 0)    
-                        elif any(i in [17, 18, 19, 20] for i in [start_idx, end_idx]):
-                            line_color = (255, 0, 0)    
-                        else:
-                            line_color = (0, 0, 0)        # preto
-
-                        cv2.line(frame, (x0, y0), (x1, y1), line_color, 2)
-
-                    # Publica no RViz também
-                    self.publish_landmarks_and_connections(hand_landmarks, hand_id=i)
-
-            cv2.imshow('Hand Landmarker', frame)
+            cv2.imshow('Hand Gesture Detector', frame)
             if cv2.waitKey(1) & 0xFF in (ord('q'), ord('Q')):
-                self.get_logger().info('Encerrando pela tecla Q.')
                 break
 
             rclpy.spin_once(self, timeout_sec=0)
@@ -168,7 +140,7 @@ class HandLandmarkerRVizNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = HandLandmarkerRVizNode()
+    node = HandGestureNode()
     try:
         node.run()
     except KeyboardInterrupt:
@@ -176,6 +148,7 @@ def main(args=None):
     finally:
         node.destroy_node()
         rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()
