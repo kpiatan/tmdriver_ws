@@ -20,11 +20,11 @@ class MoveDelta(Node):
         while not self.client_right.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('Aguardando serviço set_positions2 (direita)...')
 
-        # Subscrições: gestos
+        # Subscribers dos gestos
         self.sub_left = self.create_subscription(Int32MultiArray, 'mao_esquerda', self.callback_left, 10)
         self.sub_right = self.create_subscription(Int32MultiArray, 'mao_direita', self.callback_right, 10)
 
-        # Subscrições: feedback de posicao
+        # Subscribers de feedback de posicao
         self.sub_feedback_left = self.create_subscription(FeedbackState, '/feedback_states', self.feedback_left_cb, 10)
         self.sub_feedback_right = self.create_subscription(FeedbackState, '/feedback_states2', self.feedback_right_cb, 10)
 
@@ -39,18 +39,18 @@ class MoveDelta(Node):
 
         self.velocity = 0.1
 
-        # --- limites individuais de aproximacao no centro da bancada ---
+        # Limites individuais de aproximacao no centro da bancada 
         self.limit_left = -0.2763647
         self.limit_right = 0.2421141
 
-    # --- CALLBACKS DE FEEDBACK ---
+    # CALLBACKS DE FEEDBACK 
     def feedback_left_cb(self, msg):
         self.last_feedback_left = msg
 
     def feedback_right_cb(self, msg):
         self.last_feedback_right = msg
 
-    # --- CALLBACKS DE GESTOS ---
+    # CALLBACKS DE GESTOS 
     def callback_left(self, msg):
         gesture = tuple(msg.data)
         now = time.time()
@@ -69,13 +69,13 @@ class MoveDelta(Node):
                 delta = -self.increment if gesture == (1,1,1,1) else +self.increment
                 self.increment_joint(self.client_right, self.last_feedback_right.joint_pos, delta, "direita", gesture)
 
-    # --- FUNÇÃO PARA ENVIAR MOVIMENTO ---
+    # FUNÇÃO PARA ENVIAR MOVIMENTO 
     def increment_joint(self, client, current_positions, delta, side, gesture):
         new_positions = list(copy.deepcopy(current_positions))
         if len(new_positions) > 1:  # junta 2 existe
             new_val = new_positions[1] + delta
 
-            # --- aplica limites SOMENTE no gesto (1,1,1,0) ---
+            # aplica limites SOMENTE no gesto (1,1,1,0)
             if gesture == (1,1,1,0):
                 if side == "esquerda" and new_val < self.limit_left:
                     self.get_logger().warn(
@@ -116,7 +116,6 @@ class MoveDelta(Node):
         except Exception as e:
             self.get_logger().error(f"[{side}] Erro ao enviar movimento incremental ({gesture}): {e}")
 
-# --- MAIN ---
 def main():
     rclpy.init()
     node = MoveDelta()
