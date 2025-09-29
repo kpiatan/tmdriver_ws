@@ -7,9 +7,9 @@ from tm_msgs.msg import FeedbackState  # msg que contém joint_pos
 import time
 import copy
 
-class DualRobotEmergencyController(Node):
+class MoveDelta(Node):
     def __init__(self):
-        super().__init__('dual_robot_emergency_controller')
+        super().__init__('move_delta')
 
         # Clientes de movimento
         self.client_left = self.create_client(SetPositions, 'set_positions')
@@ -24,20 +24,24 @@ class DualRobotEmergencyController(Node):
         self.sub_left = self.create_subscription(Int32MultiArray, 'mao_esquerda', self.callback_left, 10)
         self.sub_right = self.create_subscription(Int32MultiArray, 'mao_direita', self.callback_right, 10)
 
-        # Subscrições: feedback
+        # Subscrições: feedback de posicao
         self.sub_feedback_left = self.create_subscription(FeedbackState, '/feedback_states', self.feedback_left_cb, 10)
         self.sub_feedback_right = self.create_subscription(FeedbackState, '/feedback_states2', self.feedback_right_cb, 10)
 
         self.last_feedback_left = None
         self.last_feedback_right = None
 
-        # Controle para não spammar
+        # Controle de frequência de comandos ao robô
         self.last_time_left = 0
         self.last_time_right = 0
-        self.step_interval = 0.7  # segundos entre passos
-        self.increment = 0.03     # radianos por passo
+        self.step_interval = 0.8  # segundos entre passos
+        self.increment = 0.04     # radianos por passo
 
-        self.velocity = 0.2
+        self.velocity = 0.1
+
+        # --- limites individuais de aproximacao no centro da bancada ---
+        self.limit_left = -0.2763647
+        self.limit_right = 0.2421141
 
     # --- CALLBACKS DE FEEDBACK ---
     def feedback_left_cb(self, msg):
@@ -69,7 +73,22 @@ class DualRobotEmergencyController(Node):
     def increment_joint(self, client, current_positions, delta, side, gesture):
         new_positions = list(copy.deepcopy(current_positions))
         if len(new_positions) > 1:  # junta 2 existe
-            new_positions[1] += delta
+            new_val = new_positions[1] + delta
+
+            # --- aplica limites SOMENTE no gesto (1,1,1,0) ---
+            if gesture == (1,1,1,0):
+                if side == "esquerda" and new_val < self.limit_left:
+                    self.get_logger().warn(
+                        f"[{side}] Limite atingido ({new_val:.6f} rad). Não movendo mais para dentro."
+                    )
+                    return
+                if side == "direita" and new_val > self.limit_right:
+                    self.get_logger().warn(
+                        f"[{side}] Limite atingido ({new_val:.6f} rad). Não movendo mais para dentro."
+                    )
+                    return
+
+            new_positions[1] = new_val
         else:
             self.get_logger().error(f"[{side}] Feedback inválido (sem junta 2).")
             return
@@ -82,7 +101,7 @@ class DualRobotEmergencyController(Node):
         req.blend_percentage = 0
         req.fine_goal = False
 
-        self.get_logger().info(f"[{side}] Gesto {gesture} → movendo junta 2 para {new_positions[1]:.3f} rad")
+        self.get_logger().info(f"[{side}] Gesto {gesture} → movendo junta 2 para {new_positions[1]:.6f} rad")
 
         future = client.call_async(req)
         future.add_done_callback(lambda f: self.motion_done_callback(f, side, gesture))
@@ -100,7 +119,7 @@ class DualRobotEmergencyController(Node):
 # --- MAIN ---
 def main():
     rclpy.init()
-    node = DualRobotEmergencyController()
+    node = MoveDelta()
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
