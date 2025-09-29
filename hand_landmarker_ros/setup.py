@@ -25,7 +25,8 @@ setup(
             'hand_landmarks_publisher = hand_landmarker_ros.hand_landmarks_publisher:main',
             'hand_state_publisher = hand_landmarker_ros.hand_state_publisher:main',
             'hand_landmarker_node = hand_landmarker_ros.hand_landmarker_node:main',
-            'dual_robot_controller = hand_landmarker_ros.dual_robot_controller:main',
+            'move_fixed = hand_landmarker_ros.move_fixed:main',
+            'move_delta = hand_landmarker_ros.move_delta:main',
         ],
     },
 )
