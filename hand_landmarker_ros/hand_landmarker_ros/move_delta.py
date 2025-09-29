@@ -34,8 +34,8 @@ class MoveDelta(Node):
         # Controle de frequência de comandos ao robô
         self.last_time_left = 0
         self.last_time_right = 0
-        self.step_interval = 0.8  # segundos entre passos
-        self.increment = 0.04     # radianos por passo
+        self.step_interval = 0.5  # segundos entre passos
+        self.increment = 0.01     # radianos por passo
 
         self.velocity = 0.1
 
@@ -75,7 +75,7 @@ class MoveDelta(Node):
         if len(new_positions) > 1:  # junta 2 existe
             new_val = new_positions[1] + delta
 
-            # aplica limites SOMENTE no gesto (1,1,1,0)
+            # aplica limites internos
             if gesture == (1,1,1,0):
                 if side == "esquerda" and new_val < self.limit_left:
                     self.get_logger().warn(
