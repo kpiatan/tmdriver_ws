@@ -1,0 +1,44 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+
+# esse programa mostra um exemplo aleatório do dataset processado,
+# lotando os landmarks da mão
+X = np.load("X.npy")
+y = np.load("y.npy")
+
+# escolher índice aleatório
+idx = random.randint(0, len(X) - 1)
+
+sample = X[idx]
+label = y[idx]
+
+# reshape
+points = sample.reshape(21, 3)
+
+x = points[:, 0]
+y_coords = points[:, 1]
+
+plt.figure()
+plt.scatter(x, y_coords)
+
+# inverter eixo Y (formato de imagem)
+plt.gca().invert_yaxis()
+
+# título com o gesto
+plt.title(f"Gesto: {label} (idx={idx})")
+
+# conexões da mão
+connections = [
+    (0,1),(1,2),(2,3),(3,4),
+    (0,5),(5,6),(6,7),(7,8),
+    (0,9),(9,10),(10,11),(11,12),
+    (0,13),(13,14),(14,15),(15,16),
+    (0,17),(17,18),(18,19),(19,20)
+]
+
+for c in connections:
+    plt.plot([x[c[0]], x[c[1]]],
+             [y_coords[c[0]], y_coords[c[1]]])
+
+plt.show()

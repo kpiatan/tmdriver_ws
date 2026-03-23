@@ -1,0 +1,84 @@
+import numpy as np
+from collections import Counter
+import matplotlib.pyplot as plt
+
+# esse programa analisa o dataset processado,
+# mostrando estatísticas e gráficos para entender melhor os dados
+X = np.load("X.npy")
+y = np.load("y.npy")
+
+print("=== INFORMAÇÕES GERAIS ===")
+print(f"Total de amostras: {len(X)}")
+print(f"Formato X: {X.shape}")
+print(f"Formato y: {y.shape}")
+
+print("\n=== DISTRIBUIÇÃO DE CLASSES ===")
+counter = Counter(y)
+
+total = len(y)
+
+for label, count in counter.items():
+    perc = (count / total) * 100
+    print(f"{label}: {count} amostras ({perc:.2f}%)")
+
+print("\n=== BALANCEAMENTO ===")
+counts = list(counter.values())
+print(f"Min: {min(counts)}")
+print(f"Max: {max(counts)}")
+print(f"Diferença (max-min): {max(counts) - min(counts)}")
+
+if max(counts) - min(counts) < 0.2 * max(counts):
+    print("Dataset relativamente balanceado 👍")
+else:
+    print("Dataset desbalanceado ⚠️")
+
+print("\n=== ESTATÍSTICAS DOS DADOS (X) ===")
+print(f"Valor mínimo: {X.min():.4f}")
+print(f"Valor máximo: {X.max():.4f}")
+print(f"Média: {X.mean():.4f}")
+print(f"Desvio padrão: {X.std():.4f}")
+
+print("\n=== CHECAGEM DE PROBLEMAS ===")
+
+# verificar NaN
+print(f"Valores NaN: {np.isnan(X).sum()}")
+
+# verificar infinitos
+print(f"Valores Inf: {np.isinf(X).sum()}")
+
+# duplicatas
+print("\nVerificando duplicatas...")
+unique_samples = np.unique(X, axis=0)
+print(f"Amostras únicas: {len(unique_samples)}")
+print(f"Duplicatas: {len(X) - len(unique_samples)}")
+
+print("\n=== FEATURES ===")
+print(f"Número de features por amostra: {X.shape[1]}")
+
+# =========================
+# GRÁFICO
+# =========================
+
+labels = sorted(counter.keys())
+counts = [counter[label] for label in labels]
+
+plt.figure()
+plt.bar(labels, counts)
+
+plt.title("Distribuição de Gestos no Dataset")
+plt.xlabel("Gestos")
+plt.ylabel("Número de Amostras")
+
+# rotaciona labels se necessário
+plt.xticks(rotation=45)
+
+# adicionar valores em cima das barras
+for i, v in enumerate(counts):
+    plt.text(i, v + max(counts)*0.01, str(v), ha='center')
+
+plt.tight_layout()
+
+# salvar figura
+plt.savefig("distribuicao_gestos.png", dpi=300)
+
+plt.show()
