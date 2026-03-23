@@ -1,0 +1,122 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    confusion_matrix,
+    ConfusionMatrixDisplay
+)
+from sklearn.preprocessing import StandardScaler
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
+
+# esse programa treina vários modelos de ML usando os dados processados,
+# comparando acurácias e matrizes de confusão
+
+# Carregar dados
+X = np.load("X.npy")
+y = np.load("y.npy")
+
+# Filtrar 3 dedos + wrist
+
+X = X.reshape(-1, 21, 3)
+
+# índices: wrist + médio + anelar + mínimo
+idx = [0, 9,10,11,12, 13,14,15,16, 17,18,19,20]
+
+X = X[:, idx, :]
+X = X.reshape(X.shape[0], -1)
+
+print("Shape final:", X.shape)
+
+# Train/Test
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+# Normalização
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Modelos
+models = {
+    "Random Forest": RandomForestClassifier(),
+    "KNN": KNeighborsClassifier(n_neighbors=5),
+    "SVM": SVC(),
+    "MLP": MLPClassifier(
+        hidden_layer_sizes=(128, 64),
+        activation='relu',
+        solver='adam',
+        max_iter=2000,
+        random_state=42
+    )
+}
+
+results = {}
+
+# Treinamento
+for name, model in models.items():
+    print(f"\n=== {name} ===")
+
+    # usar dados escalados quando necessário
+    if name in ["MLP", "SVM", "KNN"]:
+        X_tr = X_train_scaled
+        X_te = X_test_scaled
+    else:
+        X_tr = X_train
+        X_te = X_test
+
+    model.fit(X_tr, y_train)
+    y_pred = model.predict(X_te)
+
+    acc = accuracy_score(y_test, y_pred)
+    results[name] = acc
+
+    print(f"Acurácia: {acc:.4f}")
+    print(classification_report(y_test, y_pred))
+
+    # MATRIZ DE CONFUSÃO (TEXTO)
+    labels = np.unique(y_test)
+    cm = confusion_matrix(y_test, y_pred, labels=labels)
+
+    print("\nMatriz de Confusão:")
+    print("Labels:", labels)
+    print(cm)
+
+    # MATRIZ DE CONFUSÃO (GRÁFICO)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=labels)
+    disp.plot(xticks_rotation=45)
+
+    plt.title(f"Matriz de Confusão - {name}")
+    plt.tight_layout()
+
+    plt.savefig(f"confusion_matrix_{name}.png", dpi=300)
+    plt.show()
+
+# COMPARAÇÃO FINAL
+names = list(results.keys())
+scores = list(results.values())
+
+plt.figure()
+plt.bar(names, scores)
+
+plt.title("Comparação de Modelos")
+plt.ylabel("Acurácia")
+
+for i, v in enumerate(scores):
+    plt.text(i, v + 0.01, f"{v:.3f}", ha='center')
+
+plt.ylim(0, 1)
+plt.tight_layout()
+
+plt.savefig("comparacao_modelos.png", dpi=300)
+plt.show()

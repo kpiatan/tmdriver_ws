@@ -13,7 +13,7 @@ OUTPUT_X = "X.npy"
 OUTPUT_Y = "y.npy"
 
 FRAME_SKIP = 6  # ~5 FPS
-IGNORE_SECONDS = 1  # ignorar início e fim
+IGNORE_SECONDS = 1  # ignorar 1s no início e fim
 
 
 def normalize_landmarks(landmarks):

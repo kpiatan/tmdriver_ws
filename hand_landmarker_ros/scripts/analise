@@ -28,15 +28,9 @@ print(f"Max: {max(counts)}")
 print(f"Diferença (max-min): {max(counts) - min(counts)}")
 
 if max(counts) - min(counts) < 0.2 * max(counts):
-    print("Dataset relativamente balanceado 👍")
+    print("Dataset relativamente balanceado")
 else:
-    print("Dataset desbalanceado ⚠️")
-
-print("\n=== ESTATÍSTICAS DOS DADOS (X) ===")
-print(f"Valor mínimo: {X.min():.4f}")
-print(f"Valor máximo: {X.max():.4f}")
-print(f"Média: {X.mean():.4f}")
-print(f"Desvio padrão: {X.std():.4f}")
+    print("Dataset desbalanceado")
 
 print("\n=== CHECAGEM DE PROBLEMAS ===")
 
@@ -55,10 +49,7 @@ print(f"Duplicatas: {len(X) - len(unique_samples)}")
 print("\n=== FEATURES ===")
 print(f"Número de features por amostra: {X.shape[1]}")
 
-# =========================
 # GRÁFICO
-# =========================
-
 labels = sorted(counter.keys())
 counts = [counter[label] for label in labels]
 
